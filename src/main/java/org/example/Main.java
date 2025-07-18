@@ -1,38 +1,38 @@
 package org.example;
-import org.example.Lutas.Lutador;
-import org.example.Lutas.Luta;
+import org.example.Fight.Fighter;
+import org.example.Fight.Fight;
 
 public class Main {
     public static void main(String[] args) {
-        Lutador l[] = new Lutador[6];
+        Fighter l[] = new Fighter[6];
 
-        l[0] = new Lutador("Pretty Boy", "França", 31, 1.75,
+        l[0] = new Fighter("Pretty Boy", "França", 31, 1.75,
                 68.9, 11,2,1);
-        l[1] = new Lutador("Putscripts", "Brasil", 29, 1.68,
+        l[1] = new Fighter("Putscripts", "Brasil", 29, 1.68,
                 57.8, 14,2,3);
-        l[2] = new Lutador("Snapshadow", "EUA", 35, 1.65,
+        l[2] = new Fighter("Snapshadow", "EUA", 35, 1.65,
                 80.9, 12,2,1);
-        l[3] = new Lutador("Brad Code", "Austrália", 28, 1.93,
+        l[3] = new Fighter("Brad Code", "Austrália", 28, 1.93,
                 81.6, 13,0,2);
-        l[4] = new Lutador("UFOCobol", "Brasil", 37, 1.70,
+        l[4] = new Fighter("UFOCobol", "Brasil", 37, 1.70,
                 119.3, 5,4,3);
-        l[5] = new Lutador("Nerdaart", "EUA", 30, 1.81,
+        l[5] = new Fighter("Nerdaart", "EUA", 30, 1.81,
                 105.7, 12,2,4);
 
 
-        Luta UEC01 = new Luta();
-        UEC01.marcarLuta(l[0], l[1]);
-        UEC01.lutar();
+        Fight UEC01 = new Fight();
+        UEC01.scheduleFight(l[0], l[1]);
+        UEC01.toFight();
         System.out.println("\n");
         System.out.println("\n");
 
-        Luta UEC02 = new Luta();
-        UEC01.marcarLuta(l[2], l[3]);
-        UEC01.lutar();
+        Fight UEC02 = new Fight();
+        UEC02.scheduleFight(l[2], l[3]);
+        UEC02.toFight();
         System.out.println("\n");
 
-        Luta UEC03 = new Luta();
-        UEC01.marcarLuta(l[4], l[5]);
-        UEC01.lutar();
+        Fight UEC03 = new Fight();
+        UEC03.scheduleFight(l[4], l[5]);
+        UEC03.toFight();
     }
 }
