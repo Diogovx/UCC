@@ -1,29 +1,29 @@
-package org.example.Fight;
+package rage.core.model;
 
 import java.util.Random;
 
 public class Fighter {
     private String name;
-    private String nacionality;
+    private String nationality;
     private int age;
-    private double height;
-    private double weight;
+    private PhysicalAttributes physicalAttr;
     private double performanceIndex;
     private String category;
     private int victories, defeats, ties;
+    private int fadigue;
 
     public void present(){
         System.out.println("-------------------------------------");
         System.out.println("IT'S TIME! We present the fighter " + this.getName());
-        System.out.println("Directly from " + this.getNacionality());
-        System.out.println("At " + this.getAge() + " years old and " + this.getHeight() + "m");
-        System.out.println("Weighing " + this.getWeight() + "kg");
+        System.out.println("Directly from " + this.getNationality());
+        System.out.println("At " + this.getAge() + " years old and " + this.getPhysicalAttr().getHeight() + "m");
+        System.out.println("Weighing " + this.getPhysicalAttr().getWeight() + "kg");
         System.out.println(this.getVictories() + " victories!");
         System.out.println(this.getTies() + " ties!");
         System.out.println(this.getDefeats() + " defeats!");
     }
     public void status(){
-        System.out.println(this.getName() + " is in the " + this.getcategory() + " category");
+        System.out.println(this.getName() + " is in the " + this.getCategory() + " category");
         System.out.println("Won " + this.getVictories() + " times");
         System.out.println("Tied " + this.getTies() + " times");
         System.out.println("lost " + this.getDefeats() + " times");
@@ -40,12 +40,11 @@ public class Fighter {
     }
 
 
-    public Fighter(String name, String nacionality, int age, double height, double weight, int victories, int defeats, int ties) {
+    public Fighter(String name, String nacionality, int age, PhysicalAttributes physicalAttr, int victories, int defeats, int ties) {
         this.setName(name);
-        this.setNacionality(nacionality);
+        this.setNationality(nacionality);
         this.setAge(age);
-        this.setHeight(height);
-        this.setWeight(weight);
+        this.setPhysicalAttr(physicalAttr);
         this.setVictories(victories);
         this.setDefeats(defeats);
         this.setTies(ties);
@@ -56,28 +55,28 @@ public class Fighter {
         return name;
     }
 
-    public String getNacionality() {
-        return nacionality;
+    public String getNationality() {
+        return nationality;
     }
 
     public int getAge() {
         return age;
     }
 
-    public double getHeight() {
-        return height;
+    public PhysicalAttributes getPhysicalAttr() {
+        return physicalAttr;
     }
 
-    public double getWeight() {
-        return weight;
-    }
-
-    public String getcategory() {
+    public String getCategory() {
         return category;
     }
 
     public int getVictories() {
         return victories;
+    }
+
+    public int getFadigue() {
+        return fadigue;
     }
 
     public int getDefeats() {
@@ -96,31 +95,27 @@ public class Fighter {
         this.name = name;
     }
 
-    public void setNacionality(String nacionality) {
-        this.nacionality = nacionality;
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
     }
 
     public void setAge(int age) {
         this.age = age;
     }
 
-    public void setHeight(double height) {
-        this.height = height;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-        this.setCategory();
+    public void setPhysicalAttr(PhysicalAttributes physicalAttr) {
+        this.physicalAttr = physicalAttr;
+        setCategory();
     }
 
     private void setCategory() {
-        if(this.getWeight() < 52.2){
+        if(this.getPhysicalAttr().getWeight() < 52.2){
             this.category = "Inválido";
-        } else if(this.getWeight() <= 70.3){
+        } else if(this.getPhysicalAttr().getWeight() <= 70.3){
             this.category = "Leve";
-        } else if(this.getWeight() <= 83.9){
+        } else if(this.getPhysicalAttr().getWeight() <= 83.9){
             this.category = "Médio";
-        } else if(this.getWeight() <= 120.2){
+        } else if(this.getPhysicalAttr().getWeight() <= 120.2){
             this.category = "Pesado";
         } else{
             this.category = "Inválido";
@@ -140,9 +135,12 @@ public class Fighter {
     }
 
     private void setPerformanceIndex() {
-        double PI = (this.getHeight() * 10) + (this.getWeight() * 0.3) + (this.getVictories() * 5) - (this.getDefeats() * 2) - (Math.abs(this.getAge() - 28) * 1.5);
+        double PI = (this.getPhysicalAttr().getHeight() * 10) + (this.getPhysicalAttr().getWeight() * 0.3) + (this.getVictories() * 5) - (this.getDefeats() * 2) - (Math.abs(this.getAge() - 28) * 1.5);
         Random randomFactor = new Random();
-        double finalResult = PI + (randomFactor.nextInt(50) - 15);
-        this.performanceIndex = finalResult;
+        this.performanceIndex = PI + (randomFactor.nextInt(50) - 15);
+    }
+
+    public void setFadigue(int fadigue) {
+        this.fadigue = fadigue;
     }
 }

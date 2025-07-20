@@ -1,4 +1,6 @@
-package org.example.Fight;
+package rage.gameplay.flow;
+
+import rage.core.model.Fighter;
 
 public class Fight {
     private Fighter challenged;
@@ -7,7 +9,7 @@ public class Fight {
     private boolean approved;
 
     public void scheduleFight(Fighter l1, Fighter l2){
-        if(l1.getcategory().equals(l2.getcategory()) && l1 != l2){
+        if(l1.getCategory().equals(l2.getCategory()) && l1 != l2){
             this.setApproved(true);
             this.setChallenged(l1);
             this.setChalleging(l2);
