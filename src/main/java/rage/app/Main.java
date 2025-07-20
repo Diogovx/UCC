@@ -1,6 +1,6 @@
-package org.example;
-import org.example.Fight.Fighter;
-import org.example.Fight.Fight;
+package rage.app;
+import rage.core.model.Fighter;
+import rage.gameplay.flow.Fight;
 
 public class Main {
     public static void main(String[] args) {

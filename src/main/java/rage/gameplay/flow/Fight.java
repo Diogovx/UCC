@@ -1,4 +1,6 @@
-package org.example.Fight;
+package rage.gameplay.flow;
+
+import rage.core.model.Fighter;
 
 public class Fight {
     private Fighter challenged;

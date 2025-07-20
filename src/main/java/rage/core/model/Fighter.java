@@ -1,4 +1,4 @@
-package org.example.Fight;
+package rage.core.model;
 
 import java.util.Random;
 
