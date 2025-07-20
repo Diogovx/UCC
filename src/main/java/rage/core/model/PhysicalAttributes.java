@@ -14,6 +14,21 @@ public class PhysicalAttributes {
     private double armsReach;
     private double legsReach;
 
+    public PhysicalAttributes(double height, double weight, double agility, double cardiovascularEndurance, double aerobicEndurance, double speed, double explosivePower, double reactionTime, double rangeOfMotion, double balance, double armsReach, double legsReach) {
+        this.height = height;
+        this.weight = weight;
+        this.agility = agility;
+        this.cardiovascularEndurance = cardiovascularEndurance;
+        this.aerobicEndurance = aerobicEndurance;
+        this.speed = speed;
+        this.explosivePower = explosivePower;
+        this.reactionTime = reactionTime;
+        this.rangeOfMotion = rangeOfMotion;
+        this.balance = balance;
+        this.armsReach = armsReach;
+        this.legsReach = legsReach;
+    }
+
     public void setHeight(double height) {
         this.height = height;
     }
