@@ -10,6 +10,7 @@ public class Fighter {
     private double performanceIndex;
     private String category;
     private int victories, defeats, ties;
+    private int fadigue;
 
     public void present(){
         System.out.println("-------------------------------------");
@@ -74,6 +75,10 @@ public class Fighter {
         return victories;
     }
 
+    public int getFadigue() {
+        return fadigue;
+    }
+
     public int getDefeats() {
         return defeats;
     }
@@ -133,5 +138,9 @@ public class Fighter {
         double PI = (this.getPhysicalAttr().getHeight() * 10) + (this.getPhysicalAttr().getWeight() * 0.3) + (this.getVictories() * 5) - (this.getDefeats() * 2) - (Math.abs(this.getAge() - 28) * 1.5);
         Random randomFactor = new Random();
         this.performanceIndex = PI + (randomFactor.nextInt(50) - 15);
+    }
+
+    public void setFadigue(int fadigue) {
+        this.fadigue = fadigue;
     }
 }
