@@ -1,4 +1,5 @@
 package rage.app;
+import rage.core.model.Action;
 import rage.core.model.Fighter;
 import rage.core.model.PhysicalAttributes;
 import rage.gameplay.flow.Fight;
@@ -24,5 +25,11 @@ public class Main {
         System.out.println("\n");
         l[0].status();
         l[1].status();
+
+
+        Action strike = new Action("Punch", 3, 7);
+        l[0].addAction(strike);
+        l[1].addAction(strike);
+        System.out.println(l[0].getStrikes().getFirst().getName());
     }
 }

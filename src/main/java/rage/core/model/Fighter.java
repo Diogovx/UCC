@@ -2,6 +2,7 @@ package rage.core.model;
 
 import rage.engine.stamina.FadigueCalculator;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Fighter {
@@ -14,7 +15,7 @@ public class Fighter {
     private int victories, defeats, ties;
     private int fadigue;
     private int maxFadigue;
-
+    private ArrayList<Action> strikes;
 
     public void present(){
         System.out.println("-------------------------------------");
@@ -44,7 +45,9 @@ public class Fighter {
         this.setTies(this.getTies() + 1);
     }
 
-
+    public void addAction(Action action){
+        this.getStrikes().add(action);
+    }
 
     public Fighter(String name, String nacionality, int age, PhysicalAttributes physicalAttr, int victories, int defeats, int ties) {
         this.setName(name);
@@ -56,6 +59,7 @@ public class Fighter {
         this.setTies(ties);
         this.setPerformanceIndex();
         this.setMaxFadigue(FadigueCalculator.calculateMaxFadigue(this));
+        this.strikes = new ArrayList<>();
     }
 
     public String getName() {
@@ -100,6 +104,10 @@ public class Fighter {
 
     public int getMaxFadigue() {
         return maxFadigue;
+    }
+
+    public ArrayList<Action> getStrikes() {
+        return strikes;
     }
 
     public void setName(String name) {
@@ -157,5 +165,9 @@ public class Fighter {
 
     public void setMaxFadigue(int maxFadigue) {
         this.maxFadigue = maxFadigue;
+    }
+
+    public void setStrikes(ArrayList<Action> strikes) {
+        this.strikes = strikes;
     }
 }
