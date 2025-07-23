@@ -22,6 +22,7 @@ public class Main {
         UEC01.toFight();
         System.out.println("\n");
         System.out.println("\n");
-
+        l[0].status();
+        l[1].status();
     }
 }

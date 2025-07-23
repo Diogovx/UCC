@@ -4,8 +4,8 @@ public class PhysicalAttributes {
     private double height;
     private double weight;
     private double agility;
-    private double cardiovascularEndurance;
-    private double aerobicEndurance;
+    private int cardiovascularEndurance;
+    private int aerobicEndurance;
     private double speed;
     private double explosivePower;
     private double reactionTime;
@@ -14,7 +14,7 @@ public class PhysicalAttributes {
     private double armsReach;
     private double legsReach;
 
-    public PhysicalAttributes(double height, double weight, double agility, double cardiovascularEndurance, double aerobicEndurance, double speed, double explosivePower, double reactionTime, double rangeOfMotion, double balance, double armsReach, double legsReach) {
+    public PhysicalAttributes(double height, double weight, double agility, int cardiovascularEndurance, int aerobicEndurance, double speed, double explosivePower, double reactionTime, double rangeOfMotion, double balance, double armsReach, double legsReach) {
         this.height = height;
         this.weight = weight;
         this.agility = agility;
@@ -41,11 +41,11 @@ public class PhysicalAttributes {
         this.agility = agility;
     }
 
-    public void setCardiovascularEndurance(double cardiovascularEndurance) {
+    public void setCardiovascularEndurance(int cardiovascularEndurance) {
         this.cardiovascularEndurance = cardiovascularEndurance;
     }
 
-    public void setAerobicEndurance(double aerobicEndurance) {
+    public void setAerobicEndurance(int aerobicEndurance) {
         this.aerobicEndurance = aerobicEndurance;
     }
 
@@ -77,6 +77,7 @@ public class PhysicalAttributes {
         this.legsReach = legsReach;
     }
 
+
     public double getHeight() {
         return height;
     }
@@ -89,11 +90,11 @@ public class PhysicalAttributes {
         return agility;
     }
 
-    public double getCardiovascularEndurance() {
+    public int getCardiovascularEndurance() {
         return cardiovascularEndurance;
     }
 
-    public double getAerobicEndurance() {
+    public int getAerobicEndurance() {
         return aerobicEndurance;
     }
 
@@ -124,4 +125,5 @@ public class PhysicalAttributes {
     public double getLegsReach() {
         return legsReach;
     }
+
 }

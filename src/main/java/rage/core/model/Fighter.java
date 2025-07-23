@@ -1,5 +1,7 @@
 package rage.core.model;
 
+import rage.engine.stamina.FadigueCalculator;
+
 import java.util.Random;
 
 public class Fighter {
@@ -11,6 +13,8 @@ public class Fighter {
     private String category;
     private int victories, defeats, ties;
     private int fadigue;
+    private int maxFadigue;
+
 
     public void present(){
         System.out.println("-------------------------------------");
@@ -27,6 +31,7 @@ public class Fighter {
         System.out.println("Won " + this.getVictories() + " times");
         System.out.println("Tied " + this.getTies() + " times");
         System.out.println("lost " + this.getDefeats() + " times");
+        System.out.println("Max fadigue " + this.getMaxFadigue());
         System.out.println("\n");
     }
     public void winFight(){
@@ -40,6 +45,7 @@ public class Fighter {
     }
 
 
+
     public Fighter(String name, String nacionality, int age, PhysicalAttributes physicalAttr, int victories, int defeats, int ties) {
         this.setName(name);
         this.setNationality(nacionality);
@@ -49,6 +55,7 @@ public class Fighter {
         this.setDefeats(defeats);
         this.setTies(ties);
         this.setPerformanceIndex();
+        this.setMaxFadigue(FadigueCalculator.calculateMaxFadigue(this));
     }
 
     public String getName() {
@@ -89,6 +96,10 @@ public class Fighter {
 
     public double getPerformanceIndex() {
         return performanceIndex;
+    }
+
+    public int getMaxFadigue() {
+        return maxFadigue;
     }
 
     public void setName(String name) {
@@ -142,5 +153,9 @@ public class Fighter {
 
     public void setFadigue(int fadigue) {
         this.fadigue = fadigue;
+    }
+
+    public void setMaxFadigue(int maxFadigue) {
+        this.maxFadigue = maxFadigue;
     }
 }
