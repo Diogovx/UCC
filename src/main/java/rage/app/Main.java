@@ -27,9 +27,13 @@ public class Main {
         l[1].status();
 
 
-        Action strike = new Action("Punch", 3, 7);
-        l[0].addAction(strike);
-        l[1].addAction(strike);
-        System.out.println(l[0].getStrikes().getFirst().getName());
+        Action punch = new Action("Punch", 3, 70, Action.ActionType.STRIKE);
+        Action block = new Action("Block", 1, 100, Action.ActionType.DEFENSE);
+        l[0].addAction(punch);
+        l[1].addAction(punch);
+        l[0].addAction(block);
+        l[1].addAction(block);
+        l[0].performAction(l[0].getActions().get(0));
+        System.out.println(l[0].getFadigue());
     }
 }

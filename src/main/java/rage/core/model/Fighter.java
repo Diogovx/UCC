@@ -15,7 +15,7 @@ public class Fighter {
     private int victories, defeats, ties;
     private int fadigue;
     private int maxFadigue;
-    private ArrayList<Action> strikes;
+    private ArrayList<Action> actions;
 
     public void present(){
         System.out.println("-------------------------------------");
@@ -46,7 +46,13 @@ public class Fighter {
     }
 
     public void addAction(Action action){
-        this.getStrikes().add(action);
+        this.getActions().add(action);
+    }
+
+    public void performAction(Action action){
+        boolean hit = action.checkAccuracy();
+        this.setFadigue(FadigueCalculator.calculateFadigueConsumption(action, hit));
+        System.out.println(this.getName() + " performed " + action.getName() + (hit ? " and hit" : " but missed"));
     }
 
     public Fighter(String name, String nacionality, int age, PhysicalAttributes physicalAttr, int victories, int defeats, int ties) {
@@ -59,7 +65,7 @@ public class Fighter {
         this.setTies(ties);
         this.setPerformanceIndex();
         this.setMaxFadigue(FadigueCalculator.calculateMaxFadigue(this));
-        this.strikes = new ArrayList<>();
+        this.actions = new ArrayList<>();
     }
 
     public String getName() {
@@ -106,8 +112,8 @@ public class Fighter {
         return maxFadigue;
     }
 
-    public ArrayList<Action> getStrikes() {
-        return strikes;
+    public ArrayList<Action> getActions() {
+        return actions;
     }
 
     public void setName(String name) {
@@ -167,7 +173,7 @@ public class Fighter {
         this.maxFadigue = maxFadigue;
     }
 
-    public void setStrikes(ArrayList<Action> strikes) {
-        this.strikes = strikes;
+    public void setActions(ArrayList<Action> actions) {
+        this.actions = actions;
     }
 }
