@@ -2,6 +2,7 @@ package rage.core.model;
 
 import rage.engine.stamina.FadigueCalculator;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Fighter {
@@ -14,7 +15,8 @@ public class Fighter {
     private int victories, defeats, ties;
     private int fadigue;
     private int maxFadigue;
-
+    private ArrayList<Action> actions;
+    private Action lastAction;
 
     public void present(){
         System.out.println("-------------------------------------");
@@ -44,7 +46,38 @@ public class Fighter {
         this.setTies(this.getTies() + 1);
     }
 
+    public void addAction(Action action){
+        this.getActions().add(action);
+    }
 
+    public void performAction(Action action, Fighter target) {
+        boolean hit = action.checkAccuracy();
+        this.setFadigue(this.getFadigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
+        switch (action.getType()) {
+            case STRIKE, GRAPPLE, COUNTER -> {
+                if (hit) {
+                    System.out.println(this.getName() + " performed " + action.getName() + " and hit");
+                    target.receiveHit(action);
+
+                } else {
+                    System.out.println(this.getName() + " performed " + action.getName() + " but missed");
+
+                }
+            }
+            case DEFENSE -> {
+                System.out.println(this.getName() + " used" + action.getName());
+                ;
+            }
+
+        }
+
+    }
+
+    public void receiveHit(Action action){
+        System.out.println(this.getName() + " was hiy by " + action.getName());
+
+        this.setFadigue(this.getFadigue() + action.getBaseFadigueConsumption() / 2);
+    }
 
     public Fighter(String name, String nacionality, int age, PhysicalAttributes physicalAttr, int victories, int defeats, int ties) {
         this.setName(name);
@@ -56,6 +89,7 @@ public class Fighter {
         this.setTies(ties);
         this.setPerformanceIndex();
         this.setMaxFadigue(FadigueCalculator.calculateMaxFadigue(this));
+        this.actions = new ArrayList<>();
     }
 
     public String getName() {
@@ -100,6 +134,10 @@ public class Fighter {
 
     public int getMaxFadigue() {
         return maxFadigue;
+    }
+
+    public ArrayList<Action> getActions() {
+        return actions;
     }
 
     public void setName(String name) {
@@ -157,5 +195,9 @@ public class Fighter {
 
     public void setMaxFadigue(int maxFadigue) {
         this.maxFadigue = maxFadigue;
+    }
+
+    public void setActions(ArrayList<Action> actions) {
+        this.actions = actions;
     }
 }

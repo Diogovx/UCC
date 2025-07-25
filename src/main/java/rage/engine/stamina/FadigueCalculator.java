@@ -1,5 +1,6 @@
 package rage.engine.stamina;
 
+import rage.core.model.Action;
 import rage.core.model.Fighter;
 import rage.core.model.PhysicalAttributes;
 
@@ -23,5 +24,13 @@ public class FadigueCalculator {
 
         double fadigue = baseStamina * (1.0 - agePenalty) * (1.0 - weightPenalty);
         return (int) Math.max(fadigue, 10);
+    }
+    public static int calculateFadigueConsumption(Action action, boolean hit){
+        int baseConsumption = action.getBaseFadigueConsumption();
+        if(hit){
+            return baseConsumption;
+        } else{
+            return baseConsumption * 2;
+        }
     }
 }
