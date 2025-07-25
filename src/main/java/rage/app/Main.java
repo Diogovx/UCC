@@ -20,7 +20,6 @@ public class Main {
 
         Fight UEC01 = new Fight();
         UEC01.scheduleFight(l[0], l[1]);
-        UEC01.toFight();
         System.out.println("\n");
         System.out.println("\n");
         l[0].status();
@@ -33,8 +32,22 @@ public class Main {
         l[1].addAction(punch);
         l[0].addAction(block);
         l[1].addAction(block);
+
         l[0].performAction(l[0].getActions().get(0), l[1]);
         l[1].performAction(l[1].getActions().get(0), l[0]);
-        System.out.println(l[0].getFadigue());
+        System.out.println("\n" + l[0].getName() + " fadigue current fadigue: " + l[0].getFadigue());
+        System.out.println(l[1].getName() + " fadigue current fadigue: " + l[1].getFadigue());
+
+        l[0].performAction(l[0].getActions().get(1), l[0]);
+        l[1].performAction(l[1].getActions().get(0), l[0]);
+
+        System.out.println("\n" + l[0].getName() + " fadigue current fadigue: " + l[0].getFadigue());
+        System.out.println(l[1].getName() + " fadigue current fadigue: " + l[1].getFadigue());
+
+        l[0].performAction(l[0].getActions().get(0), l[1]);
+        l[1].performAction(l[1].getActions().get(1), l[1]);
+
+        System.out.println("\n" + l[0].getName() + " fadigue current fadigue: " + l[0].getFadigue());
+        System.out.println(l[1].getName() + " fadigue current fadigue: " + l[1].getFadigue());
     }
 }

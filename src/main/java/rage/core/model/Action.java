@@ -9,7 +9,7 @@ public class Action {
     private ActionType type;
 
     public enum ActionType {
-        STRIKE, GRAPPLE, DEFENSE, COUNTER
+        NEUTRAL ,STRIKE, GRAPPLE, DEFENSE, COUNTER
     }
 
     public boolean checkAccuracy(){
@@ -20,6 +20,11 @@ public class Action {
         }else{
             return false;
         }
+    }
+
+
+    public static Action neutralAction(){
+        return new Action("Neutral", 0, 100, ActionType.NEUTRAL);
     }
 
     public Action(String name, int baseFadigueConsumption, int baseAccuracy, ActionType type) {

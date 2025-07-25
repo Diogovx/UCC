@@ -55,28 +55,30 @@ public class Fighter {
         this.setFadigue(this.getFadigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
         switch (action.getType()) {
             case STRIKE, GRAPPLE, COUNTER -> {
-                if (hit) {
+                if (hit && target.getLastAction().getType() != Action.ActionType.DEFENSE) {
                     System.out.println(this.getName() + " performed " + action.getName() + " and hit");
                     target.receiveHit(action);
 
                 } else {
                     System.out.println(this.getName() + " performed " + action.getName() + " but missed");
-
                 }
             }
             case DEFENSE -> {
-                System.out.println(this.getName() + " used" + action.getName());
-                ;
+                System.out.println(this.getName() + " used " + action.getName());
             }
 
         }
-
+        this.setLastAction(action);
     }
 
     public void receiveHit(Action action){
-        System.out.println(this.getName() + " was hiy by " + action.getName());
+        if(this.lastAction.getType().equals(Action.ActionType.DEFENSE)){
+            System.out.println(this.getName() + " blocks the attack!");
+        } else {
+            System.out.println(this.getName() + " was hit by " + action.getName());
+            this.setFadigue(this.getFadigue() + action.getBaseFadigueConsumption() / 2);
+        }
 
-        this.setFadigue(this.getFadigue() + action.getBaseFadigueConsumption() / 2);
     }
 
     public Fighter(String name, String nacionality, int age, PhysicalAttributes physicalAttr, int victories, int defeats, int ties) {
@@ -90,6 +92,7 @@ public class Fighter {
         this.setPerformanceIndex();
         this.setMaxFadigue(FadigueCalculator.calculateMaxFadigue(this));
         this.actions = new ArrayList<>();
+        this.setLastAction(Action.neutralAction());
     }
 
     public String getName() {
@@ -138,6 +141,10 @@ public class Fighter {
 
     public ArrayList<Action> getActions() {
         return actions;
+    }
+
+    public Action getLastAction() {
+        return lastAction;
     }
 
     public void setName(String name) {
@@ -199,5 +206,9 @@ public class Fighter {
 
     public void setActions(ArrayList<Action> actions) {
         this.actions = actions;
+    }
+
+    public void setLastAction(Action lastAction) {
+        this.lastAction = lastAction;
     }
 }
