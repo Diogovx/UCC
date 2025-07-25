@@ -33,7 +33,8 @@ public class Main {
         l[1].addAction(punch);
         l[0].addAction(block);
         l[1].addAction(block);
-        l[0].performAction(l[0].getActions().get(0));
+        l[0].performAction(l[0].getActions().get(0), l[1]);
+        l[1].performAction(l[1].getActions().get(0), l[0]);
         System.out.println(l[0].getFadigue());
     }
 }

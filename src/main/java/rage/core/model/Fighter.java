@@ -16,6 +16,7 @@ public class Fighter {
     private int fadigue;
     private int maxFadigue;
     private ArrayList<Action> actions;
+    private Action lastAction;
 
     public void present(){
         System.out.println("-------------------------------------");
@@ -49,10 +50,33 @@ public class Fighter {
         this.getActions().add(action);
     }
 
-    public void performAction(Action action){
+    public void performAction(Action action, Fighter target) {
         boolean hit = action.checkAccuracy();
-        this.setFadigue(FadigueCalculator.calculateFadigueConsumption(action, hit));
-        System.out.println(this.getName() + " performed " + action.getName() + (hit ? " and hit" : " but missed"));
+        this.setFadigue(this.getFadigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
+        switch (action.getType()) {
+            case STRIKE, GRAPPLE, COUNTER -> {
+                if (hit) {
+                    System.out.println(this.getName() + " performed " + action.getName() + " and hit");
+                    target.receiveHit(action);
+
+                } else {
+                    System.out.println(this.getName() + " performed " + action.getName() + " but missed");
+
+                }
+            }
+            case DEFENSE -> {
+                System.out.println(this.getName() + " used" + action.getName());
+                ;
+            }
+
+        }
+
+    }
+
+    public void receiveHit(Action action){
+        System.out.println(this.getName() + " was hiy by " + action.getName());
+
+        this.setFadigue(this.getFadigue() + action.getBaseFadigueConsumption() / 2);
     }
 
     public Fighter(String name, String nacionality, int age, PhysicalAttributes physicalAttr, int victories, int defeats, int ties) {

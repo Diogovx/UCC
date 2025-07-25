@@ -9,7 +9,7 @@ public class Action {
     private ActionType type;
 
     public enum ActionType {
-        STRIKE, GRAPPLE, DEFENSE
+        STRIKE, GRAPPLE, DEFENSE, COUNTER
     }
 
     public boolean checkAccuracy(){
