@@ -1,6 +1,7 @@
 package UCC.gameplay.flow;
 
 import UCC.core.model.Fighter;
+import UCC.ui.ConsolePrinter;
 
 import java.util.Random;
 
@@ -30,7 +31,7 @@ public class Fight {
         this.getChallenged().present();
 
         if(this.isApproved()){
-            System.out.println("READY?");
+            ConsolePrinter.printWithDelay("READY?", 1200);
             System.out.println("FIGHT!");
             System.out.println("\n");
             this.toFight();
@@ -41,7 +42,7 @@ public class Fight {
 
     public void toFight(){
 
-        int round = 0;
+        int round = 1;
         boolean hasWinner = false;
         boolean hasTied = false;
         Fighter attacker, defender, aux;
@@ -54,40 +55,50 @@ public class Fight {
             defender = this.getChallenged();
         }
         while (!hasWinner && !hasTied){
-            System.out.println(">> Round " + round);
+            ConsolePrinter.roundBanner(round);
 
             attacker.performAction(attacker.getActions().get(ramdomAction.nextInt(attacker.getActions().size())), defender);
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
 
-            System.out.println("\n" + attacker.getName() + " fadigue current fadigue: " + attacker.getFatigue());
-            System.out.println(defender.getName() + " fadigue current fadigue: " + defender.getFatigue());
+            System.out.println("\n" + this.getChalleging().getName() + " current fatigue: " + this.getChalleging().getFatigue());
+            System.out.println(this.getChallenged().getName() + " current fatigue: " + this.getChallenged().getFatigue());
 
             if(attacker.getFatigue() >= attacker.getMaxFatigue()){
                 hasWinner = true;
-                System.out.println(defender.getName() + " wins!");
+                this.declareWinner(defender.getName());
                 defender.winFight();
                 attacker.loseFight();
+                attacker.status();
+                defender.status();
             } else if (defender.getFatigue() >= defender.getMaxFatigue()) {
                 hasWinner = true;
-                System.out.println(attacker.getName() + " wins!");
+                this.declareWinner(attacker.getName());
                 attacker.winFight();
                 defender.loseFight();
+                attacker.status();
+                defender.status();
             }
-            if (round == 30) {
+            if (round == 40) {
                 hasTied = true;
-                System.out.println("Tied");
                 attacker.tieFight();
                 defender.tieFight();
+                this.declareTie();
+                attacker.status();
+                defender.status();
             }
             aux = attacker;
             attacker = defender;
             defender = aux;
             round++;
+            System.out.println();
+
         }
+    }
+
+    public void declareWinner(String winner){
+        ConsolePrinter.typeEffect("\uD83C\uDFC6 " + winner + " wins the fight!", 200);
+    }
+    public void declareTie(){
+        ConsolePrinter.typeEffect("Tied", 250);
     }
 
     public Fighter getChallenged() {

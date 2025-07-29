@@ -1,6 +1,7 @@
 package UCC.core.model;
 
 import UCC.engine.stamina.FadigueCalculator;
+import UCC.ui.ConsolePrinter;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -19,22 +20,23 @@ public class Fighter {
     private Action lastAction;
 
     public void present(){
-        System.out.println("-------------------------------------");
-        System.out.println("IT'S TIME! We present the fighter " + this.getName());
-        System.out.println("Directly from " + this.getNationality());
-        System.out.println("At " + this.getAge() + " years old and " + this.getPhysicalAttr().getHeight() + "m");
-        System.out.println("Weighing " + this.getPhysicalAttr().getWeight() + "kg");
-        System.out.println(this.getVictories() + " victories!");
-        System.out.println(this.getTies() + " ties!");
-        System.out.println(this.getDefeats() + " defeats!");
+        ConsolePrinter.divider();
+        ConsolePrinter.typeEffect("IT'S TIME! We present the fighter " + this.getName(), 50);
+        ConsolePrinter.printWithDelay("Directly from " + this.getNationality(), 1000);
+        ConsolePrinter.printWithDelay("At " + this.getAge() + " years old and " + this.getPhysicalAttr().getHeight() + "m", 1000);
+        ConsolePrinter.printWithDelay("Weighing " + this.getPhysicalAttr().getWeight() + "kg", 1000);
+        ConsolePrinter.printWithDelay(this.getVictories() + " victories!", 1000);
+        ConsolePrinter.printWithDelay(this.getTies() + " ties!", 1000);
+        ConsolePrinter.printWithDelay(this.getDefeats() + " defeats!", 1000);
     }
     public void status(){
+        System.out.println();
+        ConsolePrinter.divider();
         System.out.println(this.getName() + " is in the " + this.getCategory() + " category");
         System.out.println("Won " + this.getVictories() + " times");
         System.out.println("Tied " + this.getTies() + " times");
         System.out.println("lost " + this.getDefeats() + " times");
         System.out.println("Max fadigue " + this.getMaxFatigue());
-        System.out.println("\n");
     }
     public void winFight(){
         this.setVictories(this.getVictories() + 1);
@@ -56,15 +58,15 @@ public class Fighter {
         switch (action.getType()) {
             case STRIKE, GRAPPLE, COUNTER -> {
                 if (hit && target.getLastAction().getType() != Action.ActionType.DEFENSE) {
-                    System.out.println(this.getName() + " performed " + action.getName() + " and hit");
+                    ConsolePrinter.printWithDelay(this.getName() + " performed " + action.getName() + " and hit", 1000);
                     target.receiveHit(action);
 
                 } else {
-                    System.out.println(this.getName() + " performed " + action.getName() + " but missed");
+                    ConsolePrinter.printWithDelay(this.getName() + " performed " + action.getName() + " but missed", 1000);
                 }
             }
             case DEFENSE -> {
-                System.out.println(this.getName() + " used " + action.getName());
+                ConsolePrinter.printWithDelay(this.getName() + " used " + action.getName(), 1000);
             }
 
         }
@@ -166,15 +168,15 @@ public class Fighter {
 
     private void setCategory() {
         if(this.getPhysicalAttr().getWeight() < 52.2){
-            this.category = "Inválido";
+            this.category = "Invalid";
         } else if(this.getPhysicalAttr().getWeight() <= 70.3){
-            this.category = "Leve";
+            this.category = "Lightweight";
         } else if(this.getPhysicalAttr().getWeight() <= 83.9){
-            this.category = "Médio";
+            this.category = "Middleweight";
         } else if(this.getPhysicalAttr().getWeight() <= 120.2){
-            this.category = "Pesado";
+            this.category = "Heavyweight";
         } else{
-            this.category = "Inválido";
+            this.category = "Invalid";
         }
     }
 
