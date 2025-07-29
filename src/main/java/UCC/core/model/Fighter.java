@@ -1,6 +1,7 @@
-package rage.core.model;
+package UCC.core.model;
 
-import rage.engine.stamina.FadigueCalculator;
+import UCC.engine.stamina.FadigueCalculator;
+import UCC.ui.ConsolePrinter;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,28 +14,29 @@ public class Fighter {
     private double performanceIndex;
     private String category;
     private int victories, defeats, ties;
-    private int fadigue;
-    private int maxFadigue;
+    private int fatigue;
+    private int maxFatigue;
     private ArrayList<Action> actions;
     private Action lastAction;
 
     public void present(){
-        System.out.println("-------------------------------------");
-        System.out.println("IT'S TIME! We present the fighter " + this.getName());
-        System.out.println("Directly from " + this.getNationality());
-        System.out.println("At " + this.getAge() + " years old and " + this.getPhysicalAttr().getHeight() + "m");
-        System.out.println("Weighing " + this.getPhysicalAttr().getWeight() + "kg");
-        System.out.println(this.getVictories() + " victories!");
-        System.out.println(this.getTies() + " ties!");
-        System.out.println(this.getDefeats() + " defeats!");
+        ConsolePrinter.divider();
+        ConsolePrinter.typeEffect("IT'S TIME! We present the fighter " + this.getName(), 50);
+        ConsolePrinter.printWithDelay("Directly from " + this.getNationality(), 1000);
+        ConsolePrinter.printWithDelay("At " + this.getAge() + " years old and " + this.getPhysicalAttr().getHeight() + "m", 1000);
+        ConsolePrinter.printWithDelay("Weighing " + this.getPhysicalAttr().getWeight() + "kg", 1000);
+        ConsolePrinter.printWithDelay(this.getVictories() + " victories!", 1000);
+        ConsolePrinter.printWithDelay(this.getTies() + " ties!", 1000);
+        ConsolePrinter.printWithDelay(this.getDefeats() + " defeats!", 1000);
     }
     public void status(){
+        System.out.println();
+        ConsolePrinter.divider();
         System.out.println(this.getName() + " is in the " + this.getCategory() + " category");
         System.out.println("Won " + this.getVictories() + " times");
         System.out.println("Tied " + this.getTies() + " times");
         System.out.println("lost " + this.getDefeats() + " times");
-        System.out.println("Max fadigue " + this.getMaxFadigue());
-        System.out.println("\n");
+        System.out.println("Max fadigue " + this.getMaxFatigue());
     }
     public void winFight(){
         this.setVictories(this.getVictories() + 1);
@@ -52,19 +54,19 @@ public class Fighter {
 
     public void performAction(Action action, Fighter target) {
         boolean hit = action.checkAccuracy();
-        this.setFadigue(this.getFadigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
+        this.setFatigue(this.getFatigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
         switch (action.getType()) {
             case STRIKE, GRAPPLE, COUNTER -> {
                 if (hit && target.getLastAction().getType() != Action.ActionType.DEFENSE) {
-                    System.out.println(this.getName() + " performed " + action.getName() + " and hit");
+                    ConsolePrinter.printWithDelay(this.getName() + " performed " + action.getName() + " and hit", 1000);
                     target.receiveHit(action);
 
                 } else {
-                    System.out.println(this.getName() + " performed " + action.getName() + " but missed");
+                    ConsolePrinter.printWithDelay(this.getName() + " performed " + action.getName() + " but missed", 1000);
                 }
             }
             case DEFENSE -> {
-                System.out.println(this.getName() + " used " + action.getName());
+                ConsolePrinter.printWithDelay(this.getName() + " used " + action.getName(), 1000);
             }
 
         }
@@ -76,7 +78,7 @@ public class Fighter {
             System.out.println(this.getName() + " blocks the attack!");
         } else {
             System.out.println(this.getName() + " was hit by " + action.getName());
-            this.setFadigue(this.getFadigue() + action.getBaseFadigueConsumption() / 2);
+            this.setFatigue(this.getFatigue() + action.getBaseFadigueConsumption() / 2);
         }
 
     }
@@ -90,7 +92,7 @@ public class Fighter {
         this.setDefeats(defeats);
         this.setTies(ties);
         this.setPerformanceIndex();
-        this.setMaxFadigue(FadigueCalculator.calculateMaxFadigue(this));
+        this.setMaxFatigue(FadigueCalculator.calculateMaxFadigue(this));
         this.actions = new ArrayList<>();
         this.setLastAction(Action.neutralAction());
     }
@@ -119,8 +121,8 @@ public class Fighter {
         return victories;
     }
 
-    public int getFadigue() {
-        return fadigue;
+    public int getFatigue() {
+        return fatigue;
     }
 
     public int getDefeats() {
@@ -135,8 +137,8 @@ public class Fighter {
         return performanceIndex;
     }
 
-    public int getMaxFadigue() {
-        return maxFadigue;
+    public int getMaxFatigue() {
+        return maxFatigue;
     }
 
     public ArrayList<Action> getActions() {
@@ -166,15 +168,15 @@ public class Fighter {
 
     private void setCategory() {
         if(this.getPhysicalAttr().getWeight() < 52.2){
-            this.category = "Inválido";
+            this.category = "Invalid";
         } else if(this.getPhysicalAttr().getWeight() <= 70.3){
-            this.category = "Leve";
+            this.category = "Lightweight";
         } else if(this.getPhysicalAttr().getWeight() <= 83.9){
-            this.category = "Médio";
+            this.category = "Middleweight";
         } else if(this.getPhysicalAttr().getWeight() <= 120.2){
-            this.category = "Pesado";
+            this.category = "Heavyweight";
         } else{
-            this.category = "Inválido";
+            this.category = "Invalid";
         }
     }
 
@@ -196,12 +198,12 @@ public class Fighter {
         this.performanceIndex = PI + (randomFactor.nextInt(50) - 15);
     }
 
-    public void setFadigue(int fadigue) {
-        this.fadigue = fadigue;
+    public void setFatigue(int fatigue) {
+        this.fatigue = fatigue;
     }
 
-    public void setMaxFadigue(int maxFadigue) {
-        this.maxFadigue = maxFadigue;
+    public void setMaxFatigue(int maxFatigue) {
+        this.maxFatigue = maxFatigue;
     }
 
     public void setActions(ArrayList<Action> actions) {
