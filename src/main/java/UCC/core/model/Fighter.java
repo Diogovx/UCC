@@ -1,6 +1,6 @@
-package rage.core.model;
+package UCC.core.model;
 
-import rage.engine.stamina.FadigueCalculator;
+import UCC.engine.stamina.FadigueCalculator;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -13,8 +13,8 @@ public class Fighter {
     private double performanceIndex;
     private String category;
     private int victories, defeats, ties;
-    private int fadigue;
-    private int maxFadigue;
+    private int fatigue;
+    private int maxFatigue;
     private ArrayList<Action> actions;
     private Action lastAction;
 
@@ -33,7 +33,7 @@ public class Fighter {
         System.out.println("Won " + this.getVictories() + " times");
         System.out.println("Tied " + this.getTies() + " times");
         System.out.println("lost " + this.getDefeats() + " times");
-        System.out.println("Max fadigue " + this.getMaxFadigue());
+        System.out.println("Max fadigue " + this.getMaxFatigue());
         System.out.println("\n");
     }
     public void winFight(){
@@ -52,7 +52,7 @@ public class Fighter {
 
     public void performAction(Action action, Fighter target) {
         boolean hit = action.checkAccuracy();
-        this.setFadigue(this.getFadigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
+        this.setFatigue(this.getFatigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
         switch (action.getType()) {
             case STRIKE, GRAPPLE, COUNTER -> {
                 if (hit && target.getLastAction().getType() != Action.ActionType.DEFENSE) {
@@ -76,7 +76,7 @@ public class Fighter {
             System.out.println(this.getName() + " blocks the attack!");
         } else {
             System.out.println(this.getName() + " was hit by " + action.getName());
-            this.setFadigue(this.getFadigue() + action.getBaseFadigueConsumption() / 2);
+            this.setFatigue(this.getFatigue() + action.getBaseFadigueConsumption() / 2);
         }
 
     }
@@ -90,7 +90,7 @@ public class Fighter {
         this.setDefeats(defeats);
         this.setTies(ties);
         this.setPerformanceIndex();
-        this.setMaxFadigue(FadigueCalculator.calculateMaxFadigue(this));
+        this.setMaxFatigue(FadigueCalculator.calculateMaxFadigue(this));
         this.actions = new ArrayList<>();
         this.setLastAction(Action.neutralAction());
     }
@@ -119,8 +119,8 @@ public class Fighter {
         return victories;
     }
 
-    public int getFadigue() {
-        return fadigue;
+    public int getFatigue() {
+        return fatigue;
     }
 
     public int getDefeats() {
@@ -135,8 +135,8 @@ public class Fighter {
         return performanceIndex;
     }
 
-    public int getMaxFadigue() {
-        return maxFadigue;
+    public int getMaxFatigue() {
+        return maxFatigue;
     }
 
     public ArrayList<Action> getActions() {
@@ -196,12 +196,12 @@ public class Fighter {
         this.performanceIndex = PI + (randomFactor.nextInt(50) - 15);
     }
 
-    public void setFadigue(int fadigue) {
-        this.fadigue = fadigue;
+    public void setFatigue(int fatigue) {
+        this.fatigue = fatigue;
     }
 
-    public void setMaxFadigue(int maxFadigue) {
-        this.maxFadigue = maxFadigue;
+    public void setMaxFatigue(int maxFatigue) {
+        this.maxFatigue = maxFatigue;
     }
 
     public void setActions(ArrayList<Action> actions) {

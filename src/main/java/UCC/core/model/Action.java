@@ -1,4 +1,4 @@
-package rage.core.model;
+package UCC.core.model;
 
 import java.util.Random;
 

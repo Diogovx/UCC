@@ -1,8 +1,8 @@
-package rage.app;
-import rage.core.model.Action;
-import rage.core.model.Fighter;
-import rage.core.model.PhysicalAttributes;
-import rage.gameplay.flow.Fight;
+package UCC.app;
+import UCC.core.model.Action;
+import UCC.core.model.Fighter;
+import UCC.core.model.PhysicalAttributes;
+import UCC.gameplay.flow.Fight;
 
 public class Main {
     public static void main(String[] args) {

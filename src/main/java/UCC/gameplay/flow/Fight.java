@@ -1,6 +1,6 @@
-package rage.gameplay.flow;
+package UCC.gameplay.flow;
 
-import rage.core.model.Fighter;
+import UCC.core.model.Fighter;
 
 import java.util.Random;
 
@@ -63,15 +63,15 @@ public class Fight {
                 throw new RuntimeException(e);
             }
 
-            System.out.println("\n" + attacker.getName() + " fadigue current fadigue: " + attacker.getFadigue());
-            System.out.println(defender.getName() + " fadigue current fadigue: " + defender.getFadigue());
+            System.out.println("\n" + attacker.getName() + " fadigue current fadigue: " + attacker.getFatigue());
+            System.out.println(defender.getName() + " fadigue current fadigue: " + defender.getFatigue());
 
-            if(attacker.getFadigue() >= attacker.getMaxFadigue()){
+            if(attacker.getFatigue() >= attacker.getMaxFatigue()){
                 hasWinner = true;
                 System.out.println(defender.getName() + " wins!");
                 defender.winFight();
                 attacker.loseFight();
-            } else if (defender.getFadigue() >= defender.getMaxFadigue()) {
+            } else if (defender.getFatigue() >= defender.getMaxFatigue()) {
                 hasWinner = true;
                 System.out.println(attacker.getName() + " wins!");
                 attacker.winFight();

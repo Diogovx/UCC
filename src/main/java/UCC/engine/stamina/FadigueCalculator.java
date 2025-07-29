@@ -1,8 +1,8 @@
-package rage.engine.stamina;
+package UCC.engine.stamina;
 
-import rage.core.model.Action;
-import rage.core.model.Fighter;
-import rage.core.model.PhysicalAttributes;
+import UCC.core.model.Action;
+import UCC.core.model.Fighter;
+import UCC.core.model.PhysicalAttributes;
 
 public class FadigueCalculator {
 
