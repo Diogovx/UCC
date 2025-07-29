@@ -2,6 +2,8 @@ package rage.gameplay.flow;
 
 import rage.core.model.Fighter;
 
+import java.util.Random;
+
 public class Fight {
     private Fighter challenged;
     private Fighter challeging;
@@ -21,50 +23,70 @@ public class Fight {
 
     }
 
+    public void startSimulation(){
+        System.out.println("##### CHALLENGER #####");
+        this.getChalleging().present();
+        System.out.println("##### CHALLENGED #####");
+        this.getChallenged().present();
 
-
-    public void toFight(){
         if(this.isApproved()){
-            System.out.println("##### CHALLENGER #####");
-            this.getChallenged().present();
-            System.out.println("##### CHALLENGED #####");
-            this.getChalleging().present();
-
-
-            if(this.getChalleging().getPerformanceIndex() < this.getChallenged().getPerformanceIndex()){
-                System.out.println(this.getChallenged().getName() + "'s victory");
-                this.getChallenged().winFight();
-                this.getChalleging().loseFight();
-            } else if (getChallenged().getPerformanceIndex() < getChalleging().getPerformanceIndex()) {
-                System.out.println(this.getChalleging().getName() +  "'s victory");
-                this.getChalleging().winFight();
-                this.getChallenged().loseFight();
-            } else{
-                System.out.println("Tied!");
-                this.getChallenged().tieFight();
-                this.getChalleging().tieFight();
-            }
-
-
-            /*switch (vencedor){
-                case 0:
-                    System.out.println("Empatou!");
-                    this.getDesafiado().empatarLutar();
-                    this.getDesafiante().empatarLutar();
-                    break;
-                case 1:
-                    System.out.println("Vitória do " + this.getDesafiado().getNome());
-                    this.getDesafiado().ganharLuta();
-                    this.getDesafiante().perderLuta();
-                    break;
-                case 2:
-                    System.out.println("Vitória do " + this.getDesafiante().getNome());
-                    this.getDesafiado().perderLuta();
-                    this.getDesafiante().ganharLuta();
-                    break;
-            }*/
+            System.out.println("READY?");
+            System.out.println("FIGHT!");
+            System.out.println("\n");
+            this.toFight();
         } else {
             System.out.println("The fight cannot happen!");
+        }
+    }
+
+    public void toFight(){
+
+        int round = 0;
+        boolean hasWinner = false;
+        boolean hasTied = false;
+        Fighter attacker, defender, aux;
+        Random ramdomAction = new Random();
+        if(this.getChallenged().getPhysicalAttr().getSpeed() > this.getChalleging().getPhysicalAttr().getSpeed()){
+            attacker = this.getChallenged();
+            defender = this.getChalleging();
+        } else {
+            attacker = this.getChalleging();
+            defender = this.getChallenged();
+        }
+        while (!hasWinner && !hasTied){
+            System.out.println(">> Round " + round);
+
+            attacker.performAction(attacker.getActions().get(ramdomAction.nextInt(attacker.getActions().size())), defender);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            System.out.println("\n" + attacker.getName() + " fadigue current fadigue: " + attacker.getFadigue());
+            System.out.println(defender.getName() + " fadigue current fadigue: " + defender.getFadigue());
+
+            if(attacker.getFadigue() >= attacker.getMaxFadigue()){
+                hasWinner = true;
+                System.out.println(defender.getName() + " wins!");
+                defender.winFight();
+                attacker.loseFight();
+            } else if (defender.getFadigue() >= defender.getMaxFadigue()) {
+                hasWinner = true;
+                System.out.println(attacker.getName() + " wins!");
+                attacker.winFight();
+                defender.loseFight();
+            }
+            if (round == 30) {
+                hasTied = true;
+                System.out.println("Tied");
+                attacker.tieFight();
+                defender.tieFight();
+            }
+            aux = attacker;
+            attacker = defender;
+            defender = aux;
+            round++;
         }
     }
 
