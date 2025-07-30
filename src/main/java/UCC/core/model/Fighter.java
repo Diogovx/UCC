@@ -4,7 +4,9 @@ import UCC.engine.stamina.FadigueCalculator;
 import UCC.ui.ConsolePrinter;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.Random;
+import java.util.Set;
 
 public class Fighter {
     private String name;
@@ -18,6 +20,7 @@ public class Fighter {
     private int maxFatigue;
     private ArrayList<Action> actions;
     private Action lastAction;
+    private Set<FatiguePenaltyLevel> fatiguePenaltiesApplied = EnumSet.noneOf(FatiguePenaltyLevel.class);
 
     public void present(){
         ConsolePrinter.divider();
@@ -71,6 +74,8 @@ public class Fighter {
 
         }
         this.setLastAction(action);
+        FadigueCalculator.applyFadiguePenalties(this);
+
     }
 
     public void receiveHit(Action action){
@@ -79,8 +84,14 @@ public class Fighter {
         } else {
             System.out.println(this.getName() + " was hit by " + action.getName());
             this.setFatigue(this.getFatigue() + action.getBaseFadigueConsumption() / 2);
+            FadigueCalculator.applyFadiguePenalties(this);
         }
 
+    }
+
+    public enum FatiguePenaltyLevel {
+        MILD_60,
+        HEAVY_90
     }
 
     public Fighter(String name, String nacionality, int age, PhysicalAttributes physicalAttr, int victories, int defeats, int ties) {
@@ -149,6 +160,10 @@ public class Fighter {
         return lastAction;
     }
 
+    public Set<FatiguePenaltyLevel> getFatiguePenaltiesApplied() {
+        return fatiguePenaltiesApplied;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -212,5 +227,9 @@ public class Fighter {
 
     public void setLastAction(Action lastAction) {
         this.lastAction = lastAction;
+    }
+
+    public void setFatiguePenaltiesApplied(Set<FatiguePenaltyLevel> fatiguePenaltiesApplied) {
+        this.fatiguePenaltiesApplied = fatiguePenaltiesApplied;
     }
 }

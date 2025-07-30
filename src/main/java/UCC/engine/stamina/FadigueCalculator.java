@@ -33,4 +33,22 @@ public class FadigueCalculator {
             return baseConsumption * 2;
         }
     }
+    public static void applyFadiguePenalties(Fighter fighter){
+        PhysicalAttributes attr = fighter.getPhysicalAttr();
+        int max = fighter.getMaxFatigue();
+        int current = fighter.getFatigue();
+        if(!fighter.getFatiguePenaltiesApplied().contains(Fighter.FatiguePenaltyLevel.HEAVY_90) && current >= max * 0.9){
+            fighter.getFatiguePenaltiesApplied().add(Fighter.FatiguePenaltyLevel.HEAVY_90);
+            attr.setBalance(attr.getBalance() * 0.6);
+            attr.setExplosivePower(attr.getExplosivePower() * 0.6);
+            attr.setAgility(attr.getAgility() * 0.6);
+            System.out.println("\uD83D\uDD25 " + fighter.getName() + " is severely fatigued! Stats reduced.");
+        } else if (!fighter.getFatiguePenaltiesApplied().contains(Fighter.FatiguePenaltyLevel.MILD_60) && current >= max * 0.6) {
+            fighter.getFatiguePenaltiesApplied().add(Fighter.FatiguePenaltyLevel.MILD_60);
+            attr.setBalance(attr.getBalance() * 0.9);
+            attr.setExplosivePower(attr.getExplosivePower() * 0.9);
+            attr.setAgility(attr.getAgility() * 0.9);
+            System.out.println("⚠\uFE0F " + fighter.getName() + " is getting tired. Slight penalty applied.");
+        }
+    }
 }
