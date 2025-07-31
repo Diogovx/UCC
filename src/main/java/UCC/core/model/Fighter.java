@@ -21,6 +21,7 @@ public class Fighter {
     private ArrayList<Action> actions;
     private Action lastAction;
     private Set<FatiguePenaltyLevel> fatiguePenaltiesApplied = EnumSet.noneOf(FatiguePenaltyLevel.class);
+    private String entryPhrase;
 
     public void present(){
         ConsolePrinter.divider();
@@ -31,6 +32,7 @@ public class Fighter {
         ConsolePrinter.printWithDelay(this.getVictories() + " victories!", 1000);
         ConsolePrinter.printWithDelay(this.getTies() + " ties!", 1000);
         ConsolePrinter.printWithDelay(this.getDefeats() + " defeats!", 1000);
+        ConsolePrinter.typeEffect(this.getEntryPhrase(), 100);
     }
     public void status(){
         System.out.println();
@@ -94,7 +96,7 @@ public class Fighter {
         HEAVY_90
     }
 
-    public Fighter(String name, String nacionality, int age, PhysicalAttributes physicalAttr, int victories, int defeats, int ties) {
+    public Fighter(String name, String nacionality, int age, PhysicalAttributes physicalAttr, int victories, int defeats, int ties, String entryPhrase) {
         this.setName(name);
         this.setNationality(nacionality);
         this.setAge(age);
@@ -106,6 +108,7 @@ public class Fighter {
         this.setMaxFatigue(FadigueCalculator.calculateMaxFadigue(this));
         this.actions = new ArrayList<>();
         this.setLastAction(Action.neutralAction());
+        this.setEntryPhrase(entryPhrase);
     }
 
     public String getName() {
@@ -162,6 +165,10 @@ public class Fighter {
 
     public Set<FatiguePenaltyLevel> getFatiguePenaltiesApplied() {
         return fatiguePenaltiesApplied;
+    }
+
+    public String getEntryPhrase() {
+        return entryPhrase;
     }
 
     public void setName(String name) {
@@ -231,5 +238,9 @@ public class Fighter {
 
     public void setFatiguePenaltiesApplied(Set<FatiguePenaltyLevel> fatiguePenaltiesApplied) {
         this.fatiguePenaltiesApplied = fatiguePenaltiesApplied;
+    }
+
+    public void setEntryPhrase(String entryPhrase) {
+        this.entryPhrase = entryPhrase;
     }
 }

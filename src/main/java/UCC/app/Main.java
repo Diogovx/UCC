@@ -13,9 +13,9 @@ public class Main {
         Fighter l[] = new Fighter[2];
 
         l[0] = new Fighter("Pretty Boy", "France", 31, pA[0],
-                 11,2,1);
+                 11,2,1, "Elegance and precision above all.");
         l[1] = new Fighter("Putscripts", "Brazil", 29, pA[1],
-                14, 2,3);
+                14, 2,3, "I only compile after knocking out.");
 
         Action punch = new Action("Punch", 3, 70, Action.ActionType.STRIKE);
         Action block = new Action("Block", 1, 100, Action.ActionType.DEFENSE);
