@@ -1,6 +1,7 @@
 package UCC.gameplay.flow;
 
 import UCC.core.model.Fighter;
+import UCC.engine.visual.CommentaryEngine;
 import UCC.ui.ConsolePrinter;
 
 import java.util.Random;
@@ -96,6 +97,7 @@ public class Fight {
 
     public void declareWinner(String winner){
         ConsolePrinter.typeEffect("\uD83C\uDFC6 " + winner + " wins the fight!", 200);
+        ConsolePrinter.printWithDelay(CommentaryEngine.getComment(CommentaryEngine.CommentType.VICTORY), 800);
     }
     public void declareTie(){
         ConsolePrinter.typeEffect("Tied", 250);
