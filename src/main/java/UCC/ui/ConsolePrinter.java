@@ -31,4 +31,23 @@ public class ConsolePrinter {
             Thread.currentThread().interrupt();
         }
     }
+
+    public static void progressBar(double currentValue, double maxValue){
+        double currentPercentage = (currentValue * 100) / maxValue;
+        if(currentPercentage > 100)
+            System.out.print("100%");
+        else
+            System.out.print(Math.round(currentPercentage) + "%");
+        System.out.print(" [");
+        for(int i = 0; i < 10; i++){
+            if (currentValue > maxValue * 0.1){
+                System.out.print("-");
+                currentValue = currentValue - (maxValue * 0.1);
+            } else{
+                System.out.print(" ");
+            }
+        }
+        System.out.print("] ");
+        System.out.println("100%");
+    }
 }

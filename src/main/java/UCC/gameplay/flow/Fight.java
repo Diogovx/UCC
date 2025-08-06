@@ -60,8 +60,11 @@ public class Fight {
 
             attacker.performAction(attacker.getActions().get(ramdomAction.nextInt(attacker.getActions().size())), defender);
 
-            System.out.println("\n" + this.getChalleging().getName() + " current fatigue: " + this.getChalleging().getFatigue());
-            System.out.println(this.getChallenged().getName() + " current fatigue: " + this.getChallenged().getFatigue());
+            System.out.print("\n" + this.getChalleging().getName() + " current fatigue: ");
+            ConsolePrinter.progressBar(this.getChalleging().getFatigue(), this.getChalleging().getMaxFatigue());
+            System.out.print(this.getChallenged().getName() + " current fatigue: ");
+            ConsolePrinter.progressBar(this.getChallenged().getFatigue(), this.getChallenged().getMaxFatigue());
+
 
             if(attacker.getFatigue() >= attacker.getMaxFatigue()){
                 hasWinner = true;

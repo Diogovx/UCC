@@ -26,6 +26,7 @@ public class Main {
 
 
         Fight UEC01 = new Fight();
+
         UEC01.scheduleFight(l[0], l[1]);
         UEC01.startSimulation();
         System.out.println("\n");
