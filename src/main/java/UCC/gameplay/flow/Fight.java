@@ -1,6 +1,7 @@
 package UCC.gameplay.flow;
 
 import UCC.core.model.Fighter;
+import UCC.engine.visual.CommentaryEngine;
 import UCC.ui.ConsolePrinter;
 
 import java.util.Random;
@@ -59,8 +60,9 @@ public class Fight {
 
             attacker.performAction(attacker.getActions().get(ramdomAction.nextInt(attacker.getActions().size())), defender);
 
-            System.out.println("\n" + this.getChalleging().getName() + " current fatigue: " + this.getChalleging().getFatigue());
-            System.out.println(this.getChallenged().getName() + " current fatigue: " + this.getChallenged().getFatigue());
+            System.out.println("\n" + this.getChalleging().getName() + " current fatigue: " + ConsolePrinter.progressBar(this.getChalleging().getFatigue(), this.getChalleging().getMaxFatigue(), 20));
+            System.out.println(this.getChallenged().getName() + " current fatigue: " + ConsolePrinter.progressBar(this.getChallenged().getFatigue(), this.getChallenged().getMaxFatigue(), 20));
+
 
             if(attacker.getFatigue() >= attacker.getMaxFatigue()){
                 hasWinner = true;
@@ -96,6 +98,7 @@ public class Fight {
 
     public void declareWinner(String winner){
         ConsolePrinter.typeEffect("\uD83C\uDFC6 " + winner + " wins the fight!", 200);
+        ConsolePrinter.printWithDelay(CommentaryEngine.getComment(CommentaryEngine.CommentType.VICTORY), 800);
     }
     public void declareTie(){
         ConsolePrinter.typeEffect("Tied", 250);

@@ -31,4 +31,22 @@ public class ConsolePrinter {
             Thread.currentThread().interrupt();
         }
     }
+
+    public static StringBuilder progressBar(double currentValue, double maxValue, int blocks){
+        StringBuilder bar = new StringBuilder();
+        double currentPercentage = (currentValue * 100) / maxValue;
+
+        bar.append(currentPercentage > 100 ? "100%" : Math.round(currentPercentage) + "%");
+        bar.append(" [");
+        for(int i = 0; i < blocks; i++){
+            if (currentValue > maxValue / blocks){
+                bar.append("-");
+                currentValue = currentValue - (maxValue / blocks);
+            } else{
+                bar.append(" ");
+            }
+        }
+        bar.append("] 100%");
+        return bar;
+    }
 }

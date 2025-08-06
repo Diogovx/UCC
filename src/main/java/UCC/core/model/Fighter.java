@@ -1,6 +1,7 @@
 package UCC.core.model;
 
 import UCC.engine.stamina.FadigueCalculator;
+import UCC.engine.visual.CommentaryEngine;
 import UCC.ui.ConsolePrinter;
 
 import java.util.ArrayList;
@@ -65,9 +66,11 @@ public class Fighter {
                 if (hit && target.getLastAction().getType() != Action.ActionType.DEFENSE) {
                     ConsolePrinter.printWithDelay(this.getName() + " performed " + action.getName() + " and hit", 1000);
                     target.receiveHit(action);
+                    ConsolePrinter.printWithDelay(CommentaryEngine.getComment(CommentaryEngine.CommentType.HIT), 800);
 
                 } else {
                     ConsolePrinter.printWithDelay(this.getName() + " performed " + action.getName() + " but missed", 1000);
+                    ConsolePrinter.printWithDelay(CommentaryEngine.getComment(CommentaryEngine.CommentType.BLOCKED), 800);
                 }
             }
             case DEFENSE -> {
