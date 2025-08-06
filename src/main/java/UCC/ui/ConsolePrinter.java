@@ -32,22 +32,21 @@ public class ConsolePrinter {
         }
     }
 
-    public static void progressBar(double currentValue, double maxValue){
+    public static StringBuilder progressBar(double currentValue, double maxValue, int blocks){
+        StringBuilder bar = new StringBuilder();
         double currentPercentage = (currentValue * 100) / maxValue;
-        if(currentPercentage > 100)
-            System.out.print("100%");
-        else
-            System.out.print(Math.round(currentPercentage) + "%");
-        System.out.print(" [");
-        for(int i = 0; i < 10; i++){
-            if (currentValue > maxValue * 0.1){
-                System.out.print("-");
-                currentValue = currentValue - (maxValue * 0.1);
+
+        bar.append(currentPercentage > 100 ? "100%" : Math.round(currentPercentage) + "%");
+        bar.append(" [");
+        for(int i = 0; i < blocks; i++){
+            if (currentValue > maxValue / blocks){
+                bar.append("-");
+                currentValue = currentValue - (maxValue / blocks);
             } else{
-                System.out.print(" ");
+                bar.append(" ");
             }
         }
-        System.out.print("] ");
-        System.out.println("100%");
+        bar.append("] 100%");
+        return bar;
     }
 }
