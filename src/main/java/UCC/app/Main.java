@@ -25,9 +25,9 @@ public class Main {
         l[1].addAction(block);
 
 
-        Fight UEC01 = new Fight();
+        Fight UEC01 = new Fight(l[0],l[1]);
 
-        UEC01.scheduleFight(l[0], l[1]);
+        UEC01.scheduleFight();
         UEC01.startSimulation();
         System.out.println("\n");
         System.out.println("\n");
