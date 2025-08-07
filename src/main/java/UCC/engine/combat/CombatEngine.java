@@ -1,5 +1,6 @@
 package UCC.engine.combat;
 
+import UCC.core.model.Action;
 import UCC.core.model.Fighter;
 import UCC.engine.visual.CommentaryEngine;
 import UCC.ui.ConsolePrinter;
@@ -10,10 +11,12 @@ public class CombatEngine {
     private Random ramdomAction = new Random();
     private Fighter challenging;
     private Fighter challenged;
+    private CombatLog combatLog;
 
     public CombatEngine(Fighter challenging, Fighter challenger) {
         this.setChallenging(challenging);
         this.setChallenged(challenger);
+        this.setCombatLog(new CombatLog());
     }
 
     public void toFight(Fighter challenging, Fighter challenged, int maxRounds){
@@ -22,13 +25,15 @@ public class CombatEngine {
         boolean hasTied = false;
         Fighter attacker, defender, aux;
         Fighter[] order = determineInitialOrder();
+        Action currentAction;
         attacker = order[0];
         defender = order[1];
 
         while (!hasWinner && !hasTied){
             ConsolePrinter.roundBanner(round);
 
-            attacker.performAction(attacker.getActions().get(ramdomAction.nextInt(attacker.getActions().size())), defender);
+            currentAction = attacker.performAction(defender);
+            this.getCombatLog().registerAction(attacker, defender, round, currentAction);
 
             System.out.println("\n" + challenging.getName() + " current fatigue: " + ConsolePrinter.progressBar(challenging.getFatigue(), challenging.getMaxFatigue(), 20));
             System.out.println(challenged.getName() + " current fatigue: " + ConsolePrinter.progressBar(challenged.getFatigue(), challenged.getMaxFatigue(), 20));
@@ -103,5 +108,13 @@ public class CombatEngine {
 
     public void setChallenged(Fighter challenged) {
         this.challenged = challenged;
+    }
+
+    public CombatLog getCombatLog() {
+        return combatLog;
+    }
+
+    public void setCombatLog(CombatLog combatLog) {
+        this.combatLog = combatLog;
     }
 }

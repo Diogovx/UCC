@@ -22,11 +22,7 @@ public class Fight {
     }
 
     public void startSimulation(){
-        System.out.println("##### CHALLENGER #####");
-        this.getChallenging().present();
-        System.out.println("##### CHALLENGED #####");
-        this.getChallenged().present();
-
+        this.presentFighters();
         if(this.isApproved()){
             ConsolePrinter.printWithDelay("READY?", 1200);
             System.out.println("FIGHT!");
@@ -35,6 +31,13 @@ public class Fight {
         } else {
             System.out.println("The fight cannot happen!");
         }
+    }
+
+    private void presentFighters(){
+        System.out.println("##### CHALLENGER #####");
+        this.getChallenging().present();
+        System.out.println("##### CHALLENGED #####");
+        this.getChallenged().present();
     }
 
     public Fight(Fighter challenging, Fighter challenged) {

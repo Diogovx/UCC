@@ -23,6 +23,7 @@ public class Fighter {
     private Action lastAction;
     private Set<FatiguePenaltyLevel> fatiguePenaltiesApplied = EnumSet.noneOf(FatiguePenaltyLevel.class);
     private String entryPhrase;
+    private Random random = new Random();
 
     public void present(){
         ConsolePrinter.divider();
@@ -58,9 +59,10 @@ public class Fighter {
         this.getActions().add(action);
     }
 
-    public void performAction(Action action, Fighter target) {
+    public Action performAction(Fighter target) {
+        Action action = this.getActions().get(random.nextInt(this.getActions().size()));
         boolean hit = action.checkAccuracy();
-        this.setFatigue(this.getFatigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
+        this.apllyFatigueConsumption(action, hit);
         switch (action.getType()) {
             case STRIKE, GRAPPLE, COUNTER -> {
                 if (hit && target.getLastAction().getType() != Action.ActionType.DEFENSE) {
@@ -80,7 +82,11 @@ public class Fighter {
         }
         this.setLastAction(action);
         FadigueCalculator.applyFadiguePenalties(this);
+        return action;
 
+    }
+    public void apllyFatigueConsumption(Action action, boolean hit){
+        this.setFatigue(this.getFatigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
     }
 
     public void receiveHit(Action action){
