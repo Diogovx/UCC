@@ -36,4 +36,8 @@ public class ConsoleFightListener implements FightEventListener{
         ConsolePrinter.roundBanner(round);
     }
 
+    @Override
+    public void showDivider() {
+        ConsolePrinter.divider();
+    }
 }

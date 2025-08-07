@@ -2,13 +2,16 @@ package UCC.gameplay.flow;
 
 import UCC.core.model.Fighter;
 import UCC.engine.combat.CombatEngine;
-import UCC.ui.ConsolePrinter;
+import UCC.ui.ConsoleFightListener;
+import UCC.ui.FightEventListener;
 
 public class Fight {
     private Fighter challenged;
     private Fighter challenging;
     private boolean approved;
     private CombatEngine engine;
+    private FightEventListener eventListener;
+
 
     public void scheduleFight(){
         if(this.getChallenged().getCategory().equals(this.getChallenging().getCategory()) && getChallenged() != getChallenging()){
@@ -24,26 +27,49 @@ public class Fight {
     public void startSimulation(){
         this.presentFighters();
         if(this.isApproved()){
-            ConsolePrinter.printWithDelay("READY?", 1200);
-            System.out.println("FIGHT!");
-            System.out.println("\n");
+            eventListener.onPrintWithDelay("READY?", 1200);
+            eventListener.onText("FIGHT!");
+            eventListener.onText("\n");
             this.engine.startCombat(40);
         } else {
-            System.out.println("The fight cannot happen!");
+            eventListener.onText("The fight cannot happen!");
         }
     }
 
     private void presentFighters(){
-        System.out.println("##### CHALLENGER #####");
-        this.getChallenging().present();
-        System.out.println("##### CHALLENGED #####");
-        this.getChallenged().present();
+        eventListener.onText("##### CHALLENGER #####");
+        eventListener.showDivider();
+        this.present(this.getChallenging());
+        eventListener.onText("##### CHALLENGED #####");
+        eventListener.showDivider();
+        this.present(this.getChallenged());
+    }
+
+    public void present(Fighter fighter){
+        eventListener.onTypeEffect("IT'S TIME! We present the fighter " + fighter.getName(), 50);
+        eventListener.onPrintWithDelay("Directly from " + fighter.getNationality(), 1000);
+        eventListener.onPrintWithDelay("At " + fighter.getAge() + " years old and " + fighter.getPhysicalAttr().getHeight() + "m", 1000);
+        eventListener.onPrintWithDelay("Weighing " + fighter.getPhysicalAttr().getWeight() + "kg", 1000);
+        eventListener.onPrintWithDelay(fighter.getVictories() + " victories!", 1000);
+        eventListener.onPrintWithDelay(fighter.getTies() + " ties!", 1000);
+        eventListener.onPrintWithDelay(fighter.getDefeats() + " defeats!", 1000);
+        eventListener.onTypeEffect(fighter.getEntryPhrase(), 100);
+    }
+    public void status(Fighter fighter){
+        eventListener.onText();
+        eventListener.showDivider();
+        eventListener.onText(fighter.getName() + " is in the " + fighter.getCategory() + " category");
+        eventListener.onText("Won " + fighter.getVictories() + " times");
+        eventListener.onText("Tied " + fighter.getTies() + " times");
+        eventListener.onText("lost " + fighter.getDefeats() + " times");
+        eventListener.onText("Max fadigue " + fighter.getMaxFatigue());
     }
 
     public Fight(Fighter challenging, Fighter challenged) {
         this.setChallenging(challenging);
         this.setChallenged(challenged);
         this.setEngine(new CombatEngine(challenging, challenged));
+        this.setEventListener(new ConsoleFightListener());
     }
 
     public Fighter getChallenged() {
@@ -77,5 +103,13 @@ public class Fight {
 
     public void setEngine(CombatEngine engine) {
         this.engine = engine;
+    }
+
+    public FightEventListener getEventListener() {
+        return eventListener;
+    }
+
+    public void setEventListener(FightEventListener eventListener) {
+        this.eventListener = eventListener;
     }
 }

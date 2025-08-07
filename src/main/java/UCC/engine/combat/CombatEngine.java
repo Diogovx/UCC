@@ -2,6 +2,7 @@ package UCC.engine.combat;
 
 import UCC.core.model.Action;
 import UCC.core.model.Fighter;
+import UCC.engine.stamina.FadigueCalculator;
 import UCC.engine.visual.CommentaryEngine;
 import UCC.ui.ConsoleFightListener;
 import UCC.ui.ConsolePrinter;
@@ -14,6 +15,7 @@ public class CombatEngine {
     private Fighter challenged;
     private CombatLog log;
     private FightEventListener eventListener;
+    private Random random = new Random();
 
     public CombatEngine(Fighter challenging, Fighter challenger) {
         this.setChallenging(challenging);
@@ -37,7 +39,7 @@ public class CombatEngine {
         while (!hasWinner && !hasTied){
             eventListener.onNewRound(round);
 
-            currentAction = attacker.performAction(defender);
+            currentAction = this.performAction(attacker, defender);
             this.getLog().registerAction(attacker, defender, round, currentAction);
 
             eventListener.showProgressBar("\n" + challenging.getName() + " current fatigue: ",  challenging.getFatigue(), challenging.getMaxFatigue(), 20);
@@ -63,6 +65,50 @@ public class CombatEngine {
         } else {
             return new Random().nextBoolean() ? new Fighter[]{this.getChallenging(), this.getChallenged()} : new Fighter[]{this.getChallenged(), this.getChallenging()};
         }
+    }
+
+    public Action performAction(Fighter caster, Fighter target) {
+        Action action = caster.getActions().get(random.nextInt(caster.getActions().size()));
+        boolean hit = action.checkAccuracy();
+        hitExecution(action, caster, target, hit);
+        this.apllyFatigueConsumption(caster, action, hit);
+        caster.setLastAction(action);
+        FadigueCalculator.applyFadiguePenalties(caster);
+        return action;
+
+    }
+    public void hitExecution(Action action, Fighter caster, Fighter target, boolean hit){
+        switch (action.getType()) {
+            case STRIKE, GRAPPLE, COUNTER -> {
+                if (hit && target.getLastAction().getType() != Action.ActionType.DEFENSE) {
+                    eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " and hit", 1000);
+                    eventListener.onComment(CommentaryEngine.CommentType.HIT);
+                    this.receiveHit(action, target);
+
+                } else {
+                    eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " but missed", 1000);
+                    eventListener.onComment(CommentaryEngine.CommentType.BLOCKED);
+                }
+            }
+            case DEFENSE -> {
+                eventListener.onPrintWithDelay(caster.getName() + " used " + action.getName(), 1000);
+            }
+        }
+    }
+    public boolean receiveHit(Action action, Fighter target){
+        if(target.getLastAction().getType().equals(Action.ActionType.DEFENSE)){
+            eventListener.onText(target.getName() + " blocks the attack!");
+            return true;
+        } else {
+            eventListener.onText(target.getName() + " was hit by " + action.getName());
+            target.setFatigue(target.getFatigue() + action.getBaseFadigueConsumption() / 2);
+            FadigueCalculator.applyFadiguePenalties(target);
+            return false;
+        }
+
+    }
+    public void apllyFatigueConsumption(Fighter caster, Action action, boolean hit){
+        caster.setFatigue(caster.getFatigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
     }
 
     private boolean checkVictoryConditions(){

@@ -1,12 +1,11 @@
 package UCC.core.model;
 
 import UCC.engine.stamina.FadigueCalculator;
-import UCC.engine.visual.CommentaryEngine;
-import UCC.ui.ConsolePrinter;
+import UCC.ui.ConsoleFightListener;
+import UCC.ui.FightEventListener;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.Random;
 import java.util.Set;
 
 public class Fighter {
@@ -14,7 +13,6 @@ public class Fighter {
     private String nationality;
     private int age;
     private PhysicalAttributes physicalAttr;
-    private double performanceIndex;
     private String category;
     private int victories, defeats, ties;
     private int fatigue;
@@ -23,28 +21,8 @@ public class Fighter {
     private Action lastAction;
     private Set<FatiguePenaltyLevel> fatiguePenaltiesApplied = EnumSet.noneOf(FatiguePenaltyLevel.class);
     private String entryPhrase;
-    private Random random = new Random();
 
-    public void present(){
-        ConsolePrinter.divider();
-        ConsolePrinter.typeEffect("IT'S TIME! We present the fighter " + this.getName(), 50);
-        ConsolePrinter.printWithDelay("Directly from " + this.getNationality(), 1000);
-        ConsolePrinter.printWithDelay("At " + this.getAge() + " years old and " + this.getPhysicalAttr().getHeight() + "m", 1000);
-        ConsolePrinter.printWithDelay("Weighing " + this.getPhysicalAttr().getWeight() + "kg", 1000);
-        ConsolePrinter.printWithDelay(this.getVictories() + " victories!", 1000);
-        ConsolePrinter.printWithDelay(this.getTies() + " ties!", 1000);
-        ConsolePrinter.printWithDelay(this.getDefeats() + " defeats!", 1000);
-        ConsolePrinter.typeEffect(this.getEntryPhrase(), 100);
-    }
-    public void status(){
-        System.out.println();
-        ConsolePrinter.divider();
-        System.out.println(this.getName() + " is in the " + this.getCategory() + " category");
-        System.out.println("Won " + this.getVictories() + " times");
-        System.out.println("Tied " + this.getTies() + " times");
-        System.out.println("lost " + this.getDefeats() + " times");
-        System.out.println("Max fadigue " + this.getMaxFatigue());
-    }
+
     public void winFight(){
         this.setVictories(this.getVictories() + 1);
     }
@@ -57,47 +35,6 @@ public class Fighter {
 
     public void addAction(Action action){
         this.getActions().add(action);
-    }
-
-    public Action performAction(Fighter target) {
-        Action action = this.getActions().get(random.nextInt(this.getActions().size()));
-        boolean hit = action.checkAccuracy();
-        this.apllyFatigueConsumption(action, hit);
-        switch (action.getType()) {
-            case STRIKE, GRAPPLE, COUNTER -> {
-                if (hit && target.getLastAction().getType() != Action.ActionType.DEFENSE) {
-                    ConsolePrinter.printWithDelay(this.getName() + " performed " + action.getName() + " and hit", 1000);
-                    target.receiveHit(action);
-                    ConsolePrinter.printWithDelay(CommentaryEngine.getComment(CommentaryEngine.CommentType.HIT), 800);
-
-                } else {
-                    ConsolePrinter.printWithDelay(this.getName() + " performed " + action.getName() + " but missed", 1000);
-                    ConsolePrinter.printWithDelay(CommentaryEngine.getComment(CommentaryEngine.CommentType.BLOCKED), 800);
-                }
-            }
-            case DEFENSE -> {
-                ConsolePrinter.printWithDelay(this.getName() + " used " + action.getName(), 1000);
-            }
-
-        }
-        this.setLastAction(action);
-        FadigueCalculator.applyFadiguePenalties(this);
-        return action;
-
-    }
-    public void apllyFatigueConsumption(Action action, boolean hit){
-        this.setFatigue(this.getFatigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
-    }
-
-    public void receiveHit(Action action){
-        if(this.lastAction.getType().equals(Action.ActionType.DEFENSE)){
-            System.out.println(this.getName() + " blocks the attack!");
-        } else {
-            System.out.println(this.getName() + " was hit by " + action.getName());
-            this.setFatigue(this.getFatigue() + action.getBaseFadigueConsumption() / 2);
-            FadigueCalculator.applyFadiguePenalties(this);
-        }
-
     }
 
     public enum FatiguePenaltyLevel {
@@ -113,7 +50,6 @@ public class Fighter {
         this.setVictories(victories);
         this.setDefeats(defeats);
         this.setTies(ties);
-        this.setPerformanceIndex();
         this.setMaxFatigue(FadigueCalculator.calculateMaxFadigue(this));
         this.actions = new ArrayList<>();
         this.setLastAction(Action.neutralAction());
@@ -154,10 +90,6 @@ public class Fighter {
 
     public int getTies() {
         return ties;
-    }
-
-    public double getPerformanceIndex() {
-        return performanceIndex;
     }
 
     public int getMaxFatigue() {
@@ -223,12 +155,6 @@ public class Fighter {
         this.ties = ties;
     }
 
-    private void setPerformanceIndex() {
-        double PI = (this.getPhysicalAttr().getHeight() * 10) + (this.getPhysicalAttr().getWeight() * 0.3) + (this.getVictories() * 5) - (this.getDefeats() * 2) - (Math.abs(this.getAge() - 28) * 1.5);
-        Random randomFactor = new Random();
-        this.performanceIndex = PI + (randomFactor.nextInt(50) - 15);
-    }
-
     public void setFatigue(int fatigue) {
         this.fatigue = fatigue;
     }
@@ -252,4 +178,5 @@ public class Fighter {
     public void setEntryPhrase(String entryPhrase) {
         this.entryPhrase = entryPhrase;
     }
+
 }

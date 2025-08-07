@@ -10,4 +10,5 @@ public interface FightEventListener {
     void onText();
     void onPrintWithDelay(String text, int delay);
     void onTypeEffect(String text, int delay);
+    void showDivider();
 }
