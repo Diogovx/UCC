@@ -27,7 +27,7 @@ public class Fight {
             ConsolePrinter.printWithDelay("READY?", 1200);
             System.out.println("FIGHT!");
             System.out.println("\n");
-            this.engine.toFight(this.getChallenging(), this.getChallenged(), 40);
+            this.engine.startCombat(40);
         } else {
             System.out.println("The fight cannot happen!");
         }

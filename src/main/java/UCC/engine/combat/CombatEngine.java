@@ -3,40 +3,45 @@ package UCC.engine.combat;
 import UCC.core.model.Action;
 import UCC.core.model.Fighter;
 import UCC.engine.visual.CommentaryEngine;
+import UCC.ui.ConsoleFightListener;
 import UCC.ui.ConsolePrinter;
+import UCC.ui.FightEventListener;
 
 import java.util.Random;
 
 public class CombatEngine {
-    private Random ramdomAction = new Random();
     private Fighter challenging;
     private Fighter challenged;
-    private CombatLog combatLog;
+    private CombatLog log;
+    private FightEventListener eventListener;
 
     public CombatEngine(Fighter challenging, Fighter challenger) {
         this.setChallenging(challenging);
         this.setChallenged(challenger);
-        this.setCombatLog(new CombatLog());
+        this.setLog(new CombatLog());
+        this.setEventListener(new ConsoleFightListener());
     }
 
-    public void toFight(Fighter challenging, Fighter challenged, int maxRounds){
+    public void startCombat(int maxRounds){
         int round = 1;
         boolean hasWinner = false;
         boolean hasTied = false;
-        Fighter attacker, defender, aux;
+        Fighter attacker;
+        Fighter defender;
+        Fighter aux;
         Fighter[] order = determineInitialOrder();
         Action currentAction;
         attacker = order[0];
         defender = order[1];
 
         while (!hasWinner && !hasTied){
-            ConsolePrinter.roundBanner(round);
+            eventListener.onNewRound(round);
 
             currentAction = attacker.performAction(defender);
-            this.getCombatLog().registerAction(attacker, defender, round, currentAction);
+            this.getLog().registerAction(attacker, defender, round, currentAction);
 
-            System.out.println("\n" + challenging.getName() + " current fatigue: " + ConsolePrinter.progressBar(challenging.getFatigue(), challenging.getMaxFatigue(), 20));
-            System.out.println(challenged.getName() + " current fatigue: " + ConsolePrinter.progressBar(challenged.getFatigue(), challenged.getMaxFatigue(), 20));
+            eventListener.showProgressBar("\n" + challenging.getName() + " current fatigue: ",  challenging.getFatigue(), challenging.getMaxFatigue(), 20);
+            eventListener.showProgressBar(challenged.getName() + " current fatigue: ",  challenged.getFatigue(), challenged.getMaxFatigue(), 20);
 
             hasWinner = checkVictoryConditions();
             hasTied = checkTieConditions(round, maxRounds);
@@ -45,7 +50,7 @@ public class CombatEngine {
             attacker = defender;
             defender = aux;
             round++;
-            System.out.println();
+            eventListener.onText();
 
         }
     }
@@ -87,8 +92,8 @@ public class CombatEngine {
     }
 
     private void declareWinner(String winner){
-        ConsolePrinter.typeEffect("\uD83C\uDFC6 " + winner + " wins the fight!", 200);
-        ConsolePrinter.printWithDelay(CommentaryEngine.getComment(CommentaryEngine.CommentType.VICTORY), 800);
+        eventListener.onPrintWithDelay("\uD83C\uDFC6 " + winner + " wins the fight!", 200);
+        eventListener.onComment(CommentaryEngine.CommentType.VICTORY);
     }
     private void declareTie(){
         ConsolePrinter.typeEffect("Tied", 250);
@@ -110,11 +115,19 @@ public class CombatEngine {
         this.challenged = challenged;
     }
 
-    public CombatLog getCombatLog() {
-        return combatLog;
+    public CombatLog getLog() {
+        return log;
     }
 
-    public void setCombatLog(CombatLog combatLog) {
-        this.combatLog = combatLog;
+    public void setLog(CombatLog log) {
+        this.log = log;
+    }
+
+    public FightEventListener getEventListener() {
+        return eventListener;
+    }
+
+    public void setEventListener(FightEventListener eventListener) {
+        this.eventListener = eventListener;
     }
 }
