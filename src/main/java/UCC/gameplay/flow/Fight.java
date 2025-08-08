@@ -1,7 +1,9 @@
 package UCC.gameplay.flow;
 
+import UCC.core.enums.FightSituation;
 import UCC.core.model.Fighter;
 import UCC.engine.combat.CombatEngine;
+import UCC.engine.combat.CombatResult;
 import UCC.ui.ConsoleFightListener;
 import UCC.ui.FightEventListener;
 
@@ -11,6 +13,7 @@ public class Fight {
     private boolean approved;
     private CombatEngine engine;
     private FightEventListener eventListener;
+    private CombatResult combatResult;
 
 
     public void scheduleFight(){
@@ -24,15 +27,17 @@ public class Fight {
 
     }
 
-    public void startSimulation(){
+    public boolean startSimulation(){
         this.presentFighters();
         if(this.isApproved()){
             eventListener.onPrintWithDelay("READY?", 1200);
             eventListener.onText("FIGHT!");
             eventListener.onText("\n");
-            this.engine.startCombat(40);
+            this.setCombatResult(this.engine.startCombat(40));
+            return true;
         } else {
             eventListener.onText("The fight cannot happen!");
+            return false;
         }
     }
 
@@ -44,6 +49,7 @@ public class Fight {
         eventListener.showDivider();
         this.present(this.getChallenged());
     }
+    public void exportResults(){}
 
     public void present(Fighter fighter){
         eventListener.onTypeEffect("IT'S TIME! We present the fighter " + fighter.getName(), 50);
@@ -70,6 +76,7 @@ public class Fight {
         this.setChallenged(challenged);
         this.setEngine(new CombatEngine(challenging, challenged));
         this.setEventListener(new ConsoleFightListener());
+        this.setCombatResult(new CombatResult());
     }
 
     public Fighter getChallenged() {
@@ -111,5 +118,13 @@ public class Fight {
 
     public void setEventListener(FightEventListener eventListener) {
         this.eventListener = eventListener;
+    }
+
+    public CombatResult getCombatResult() {
+        return combatResult;
+    }
+
+    public void setCombatResult(CombatResult combatResult) {
+        this.combatResult = combatResult;
     }
 }
