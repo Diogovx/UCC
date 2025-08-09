@@ -1,6 +1,7 @@
 package UCC.core.model;
 
 import UCC.core.enums.FatiguePenaltyLevel;
+import UCC.core.enums.FighterStance;
 import UCC.engine.stamina.FadigueCalculator;
 import UCC.ui.ConsoleFightListener;
 import UCC.ui.FightEventListener;
@@ -22,7 +23,7 @@ public class Fighter {
     private Action lastAction;
     private Set<FatiguePenaltyLevel> fatiguePenaltiesApplied = EnumSet.noneOf(FatiguePenaltyLevel.class);
     private String entryPhrase;
-
+    private FighterStance stance;
 
     public void winFight(){
         this.setVictories(this.getVictories() + 1);
@@ -50,6 +51,7 @@ public class Fighter {
         this.actions = new ArrayList<>();
         this.setLastAction(Action.neutralAction());
         this.setEntryPhrase(entryPhrase);
+        this.setStance(FighterStance.NEUTRAL);
     }
 
     public String getName() {
@@ -175,4 +177,11 @@ public class Fighter {
         this.entryPhrase = entryPhrase;
     }
 
+    public FighterStance getStance() {
+        return stance;
+    }
+
+    public void setStance(FighterStance stance) {
+        this.stance = stance;
+    }
 }
