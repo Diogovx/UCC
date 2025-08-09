@@ -1,5 +1,6 @@
 package UCC.ui;
 
+import UCC.core.enums.CommentType;
 import UCC.engine.visual.CommentaryEngine;
 
 public class ConsoleFightListener implements FightEventListener{
@@ -27,7 +28,7 @@ public class ConsoleFightListener implements FightEventListener{
     }
 
     @Override
-    public void onComment(CommentaryEngine.CommentType type) {
+    public void onComment(CommentType type) {
         ConsolePrinter.printWithDelay(CommentaryEngine.getComment(type), 800);
     }
 

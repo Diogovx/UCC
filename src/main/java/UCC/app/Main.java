@@ -1,4 +1,5 @@
 package UCC.app;
+import UCC.core.enums.ActionType;
 import UCC.core.model.Action;
 import UCC.core.model.Fighter;
 import UCC.core.model.PhysicalAttributes;
@@ -17,8 +18,8 @@ public class Main {
         l[1] = new Fighter("Putscripts", "Brazil", 29, pA[1],
                 14, 2,3, "I only compile after knocking out.");
 
-        Action punch = new Action("Punch", 3, 70, Action.ActionType.STRIKE);
-        Action block = new Action("Block", 1, 100, Action.ActionType.DEFENSE);
+        Action punch = new Action("Punch", 3, 70, ActionType.STRIKE);
+        Action block = new Action("Block", 1, 100, ActionType.DEFENSE);
         l[0].addAction(punch);
         l[1].addAction(punch);
         l[0].addAction(block);

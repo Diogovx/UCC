@@ -1,5 +1,7 @@
 package UCC.engine.combat;
 
+import UCC.core.enums.ActionType;
+import UCC.core.enums.CommentType;
 import UCC.core.enums.FightSituation;
 import UCC.core.model.Action;
 import UCC.core.model.Fighter;
@@ -92,14 +94,14 @@ public class CombatEngine {
     public void hitExecution(Action action, Fighter caster, Fighter target, boolean hit){
         switch (action.getType()) {
             case STRIKE, GRAPPLE, COUNTER -> {
-                if (hit && target.getLastAction().getType() != Action.ActionType.DEFENSE) {
+                if (hit && target.getLastAction().getType() != ActionType.DEFENSE) {
                     eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " and hit", 1000);
-                    eventListener.onComment(CommentaryEngine.CommentType.HIT);
+                    eventListener.onComment(CommentType.HIT);
                     this.receiveHit(action, target);
 
                 } else {
                     eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " but missed", 1000);
-                    eventListener.onComment(CommentaryEngine.CommentType.BLOCKED);
+                    eventListener.onComment(CommentType.BLOCKED);
                 }
             }
             case DEFENSE -> {
@@ -108,7 +110,7 @@ public class CombatEngine {
         }
     }
     public boolean receiveHit(Action action, Fighter target){
-        if(target.getLastAction().getType().equals(Action.ActionType.DEFENSE)){
+        if(target.getLastAction().getType().equals(ActionType.DEFENSE)){
             eventListener.onText(target.getName() + " blocks the attack!");
             return true;
         } else {
@@ -149,7 +151,7 @@ public class CombatEngine {
 
     private void declareWinner(String winner){
         eventListener.onPrintWithDelay("\uD83C\uDFC6 " + winner + " wins the fight!", 200);
-        eventListener.onComment(CommentaryEngine.CommentType.VICTORY);
+        eventListener.onComment(CommentType.VICTORY);
     }
     private void declareTie(){
         ConsolePrinter.typeEffect("Tied", 250);

@@ -1,5 +1,7 @@
 package UCC.engine.visual;
 
+import UCC.core.enums.CommentType;
+
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -137,9 +139,6 @@ public class CommentaryEngine {
         ));
     }
 
-    public enum CommentType{
-        HIT, MISS, BLOCKED, START, CROWD_REACT, TIRED, VICTORY, STAGGERED, KNOCKOUT_TEASE, COMBO, SURPRISE, TAUNT, DEFENSE_MASTER
-    }
 
     public static String getComment(CommentType type){
         List<String> commentList;

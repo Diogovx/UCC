@@ -1,5 +1,6 @@
 package UCC.core.model;
 
+import UCC.core.enums.FatiguePenaltyLevel;
 import UCC.engine.stamina.FadigueCalculator;
 import UCC.ui.ConsoleFightListener;
 import UCC.ui.FightEventListener;
@@ -35,11 +36,6 @@ public class Fighter {
 
     public void addAction(Action action){
         this.getActions().add(action);
-    }
-
-    public enum FatiguePenaltyLevel {
-        MILD_60,
-        HEAVY_90
     }
 
     public Fighter(String name, String nacionality, int age, PhysicalAttributes physicalAttr, int victories, int defeats, int ties, String entryPhrase) {

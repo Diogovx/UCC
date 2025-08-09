@@ -1,5 +1,7 @@
 package UCC.core.model;
 
+import UCC.core.enums.ActionType;
+
 import java.util.Random;
 
 public class Action {
@@ -7,10 +9,6 @@ public class Action {
     private int baseFadigueConsumption;
     private int baseAccuracy;
     private ActionType type;
-
-    public enum ActionType {
-        NEUTRAL ,STRIKE, GRAPPLE, DEFENSE, COUNTER
-    }
 
     public boolean checkAccuracy(){
         Random randomFactor = new Random();
