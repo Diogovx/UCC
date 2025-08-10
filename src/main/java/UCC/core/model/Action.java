@@ -2,24 +2,11 @@ package UCC.core.model;
 
 import UCC.core.enums.ActionType;
 
-import java.util.Random;
-
 public class Action {
     private String name;
     private int baseFadigueConsumption;
     private int baseAccuracy;
     private ActionType type;
-
-    public boolean checkAccuracy(){
-        Random randomFactor = new Random();
-        int randomNumber = randomFactor.nextInt(100);
-        if(randomNumber <= this.getBaseAccuracy()){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
 
     public static Action neutralAction(){
         return new Action("Neutral", 0, 100, ActionType.NEUTRAL);

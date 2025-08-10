@@ -3,10 +3,10 @@ package UCC.engine.combat;
 import UCC.core.enums.ActionType;
 import UCC.core.enums.CommentType;
 import UCC.core.enums.FightSituation;
+import UCC.core.enums.FighterStance;
 import UCC.core.model.Action;
 import UCC.core.model.Fighter;
 import UCC.engine.stamina.FadigueCalculator;
-import UCC.engine.visual.CommentaryEngine;
 import UCC.ui.ConsoleFightListener;
 import UCC.ui.ConsolePrinter;
 import UCC.ui.FightEventListener;
@@ -20,12 +20,10 @@ public class CombatEngine {
     private CombatLog log;
     private CombatResult result;
     private FightEventListener eventListener;
-    private Random random = new Random();
 
     public CombatEngine(Fighter challenging, Fighter challenger) {
         this.setChallenging(challenging);
         this.setChallenged(challenger);
-        this.setLog(new CombatLog());
         this.setResult(new CombatResult());
         this.setEventListener(new ConsoleFightListener());
     }
@@ -51,10 +49,11 @@ public class CombatEngine {
         return this.getResult();
     }
     private void runRound(Fighter attacker, Fighter defender, int round){
-        Action currentAction;
+        this.setLog(ActionResolver.performAction(attacker, defender, round));
 
-        currentAction = this.performAction(attacker, defender);
-        this.getLog().registerAction(attacker, defender, round, currentAction);
+
+        this.getLog().registerAction();
+
 
         eventListener.showProgressBar("\n" + challenging.getName() + " current fatigue: ",  challenging.getFatigue(), challenging.getMaxFatigue(), 20);
         eventListener.showProgressBar(challenged.getName() + " current fatigue: ",  challenged.getFatigue(), challenged.getMaxFatigue(), 20);
@@ -81,49 +80,7 @@ public class CombatEngine {
         }
     }
 
-    public Action performAction(Fighter caster, Fighter target) {
-        Action action = caster.getActions().get(random.nextInt(caster.getActions().size()));
-        boolean hit = action.checkAccuracy();
-        hitExecution(action, caster, target, hit);
-        this.apllyFatigueConsumption(caster, action, hit);
-        caster.setLastAction(action);
-        FadigueCalculator.applyFadiguePenalties(caster);
-        return action;
 
-    }
-    public void hitExecution(Action action, Fighter caster, Fighter target, boolean hit){
-        switch (action.getType()) {
-            case STRIKE, GRAPPLE, COUNTER -> {
-                if (hit && target.getLastAction().getType() != ActionType.DEFENSE) {
-                    eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " and hit", 1000);
-                    eventListener.onComment(CommentType.HIT);
-                    this.receiveHit(action, target);
-
-                } else {
-                    eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " but missed", 1000);
-                    eventListener.onComment(CommentType.BLOCKED);
-                }
-            }
-            case DEFENSE -> {
-                eventListener.onPrintWithDelay(caster.getName() + " used " + action.getName(), 1000);
-            }
-        }
-    }
-    public boolean receiveHit(Action action, Fighter target){
-        if(target.getLastAction().getType().equals(ActionType.DEFENSE)){
-            eventListener.onText(target.getName() + " blocks the attack!");
-            return true;
-        } else {
-            eventListener.onText(target.getName() + " was hit by " + action.getName());
-            target.setFatigue(target.getFatigue() + action.getBaseFadigueConsumption() / 2);
-            FadigueCalculator.applyFadiguePenalties(target);
-            return false;
-        }
-
-    }
-    public void apllyFatigueConsumption(Fighter caster, Action action, boolean hit){
-        caster.setFatigue(caster.getFatigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
-    }
 
     private FightSituation checkVictoryConditions(int round, int maxRound){
         if (round == maxRound) {
@@ -203,5 +160,71 @@ public class CombatEngine {
 
     public void setWinner(Fighter winner) {
         this.winner = winner;
+    }
+}
+
+class ActionResolver{
+
+    public static CombatLog performAction(Fighter caster, Fighter target, int round) {
+        Random randomFactor = new Random();
+        Action action = caster.getActions().get(randomFactor.nextInt(caster.getActions().size()));
+        boolean hit = checkAccuracy(action);
+        hitExecution(action, caster, target, hit);
+        apllyFatigueConsumption(caster, action, hit);
+        caster.setLastAction(action);
+        FadigueCalculator.applyFadiguePenalties(caster);
+
+        return new CombatLog(caster, target, round, action, hit);
+    }
+
+    public static boolean checkAccuracy(Action action){
+        Random randomFactor = new Random();
+        int randomNumber = randomFactor.nextInt(100);
+        if(randomNumber <= action.getBaseAccuracy()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public static ActionType hitExecution(Action action, Fighter caster, Fighter target, boolean hit){
+        switch (action.getType()) {
+            case STRIKE, GRAPPLE, COUNTER -> {
+                caster.setStance(FighterStance.HITTING);
+                if (hit && target.getStance() != FighterStance.BLOCKING) {
+                    //eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " and hit", 1000);
+                    //eventListener.onComment(CommentType.HIT);
+                    receiveHit(action, target);
+                    caster.setStance(FighterStance.NEUTRAL);
+                } else {
+                    caster.setStance(FighterStance.NEUTRAL);
+                    target.setStance(FighterStance.NEUTRAL);
+                    //eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " but missed", 1000);
+                    //eventListener.onComment(CommentType.BLOCKED);
+                }
+            }
+            case DEFENSE -> {
+                caster.setStance(FighterStance.BLOCKING);
+                //eventListener.onPrintWithDelay(caster.getName() + " used " + action.getName(), 1000);
+            }
+        }
+        return action.getType();
+    }
+    public static boolean receiveHit(Action action, Fighter target){
+        if(target.getLastAction().getType().equals(ActionType.DEFENSE)){
+            //eventListener.onText(target.getName() + " blocks the attack!");
+            return false;
+        } else {
+            //eventListener.onText(target.getName() + " was hit by " + action.getName());
+            target.setFatigue(target.getFatigue() + action.getBaseFadigueConsumption() / 2);
+            FadigueCalculator.applyFadiguePenalties(target);
+            return true;
+        }
+
+    }
+
+
+    public static void apllyFatigueConsumption(Fighter caster, Action action, boolean hit){
+        caster.setFatigue(caster.getFatigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
     }
 }
