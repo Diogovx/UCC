@@ -7,7 +7,6 @@ import UCC.core.enums.FighterStance;
 import UCC.core.model.Action;
 import UCC.core.model.Fighter;
 import UCC.engine.stamina.FadigueCalculator;
-import UCC.ui.ConsoleFightListener;
 import UCC.ui.ConsolePrinter;
 import UCC.ui.FightEventListener;
 
@@ -20,12 +19,14 @@ public class CombatEngine {
     private CombatLog log;
     private CombatResult result;
     private FightEventListener eventListener;
+    private ActionResolver actionResolver;
 
-    public CombatEngine(Fighter challenging, Fighter challenger) {
+    public CombatEngine(Fighter challenging, Fighter challenger, FightEventListener eventListener) {
         this.setChallenging(challenging);
         this.setChallenged(challenger);
         this.setResult(new CombatResult());
-        this.setEventListener(new ConsoleFightListener());
+        this.setEventListener(eventListener);
+        this.setActionResolver(new ActionResolver(eventListener));
     }
 
     public CombatResult startCombat(int maxRounds){
@@ -34,12 +35,13 @@ public class CombatEngine {
         Fighter[] fighters = determineInitialOrder();
 
         while (situation == null){
-
-        eventListener.onNewRound(round);
-        runRound(fighters[0], fighters[1], round);
-        situation = checkVictoryConditions(round, maxRounds);
-        fighters = alternateTurn(fighters);
-        round++;
+            for(int i = 0; i < 2; i++){
+                eventListener.onNewRound(round);
+                runRound(fighters[0], fighters[1], round);
+                situation = checkVictoryConditions(round, maxRounds);
+                fighters = alternateTurn(fighters);
+            }
+            round++;
         }
 
 
@@ -49,7 +51,7 @@ public class CombatEngine {
         return this.getResult();
     }
     private void runRound(Fighter attacker, Fighter defender, int round){
-        this.setLog(ActionResolver.performAction(attacker, defender, round));
+        this.setLog(actionResolver.performAction(attacker, defender, round));
 
 
         this.getLog().registerAction();
@@ -161,11 +163,20 @@ public class CombatEngine {
     public void setWinner(Fighter winner) {
         this.winner = winner;
     }
+
+    public ActionResolver getActionResolver() {
+        return actionResolver;
+    }
+
+    public void setActionResolver(ActionResolver actionResolver) {
+        this.actionResolver = actionResolver;
+    }
 }
 
 class ActionResolver{
+    private FightEventListener eventListener;
 
-    public static CombatLog performAction(Fighter caster, Fighter target, int round) {
+    public CombatLog performAction(Fighter caster, Fighter target, int round) {
         Random randomFactor = new Random();
         Action action = caster.getActions().get(randomFactor.nextInt(caster.getActions().size()));
         boolean hit = checkAccuracy(action);
@@ -177,7 +188,7 @@ class ActionResolver{
         return new CombatLog(caster, target, round, action, hit);
     }
 
-    public static boolean checkAccuracy(Action action){
+    public boolean checkAccuracy(Action action){
         Random randomFactor = new Random();
         int randomNumber = randomFactor.nextInt(100);
         if(randomNumber <= action.getBaseAccuracy()){
@@ -187,35 +198,35 @@ class ActionResolver{
         }
     }
 
-    public static ActionType hitExecution(Action action, Fighter caster, Fighter target, boolean hit){
+    public ActionType hitExecution(Action action, Fighter caster, Fighter target, boolean hit){
         switch (action.getType()) {
             case STRIKE, GRAPPLE, COUNTER -> {
                 caster.setStance(FighterStance.HITTING);
                 if (hit && target.getStance() != FighterStance.BLOCKING) {
-                    //eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " and hit", 1000);
-                    //eventListener.onComment(CommentType.HIT);
+                    eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " and hit", 1000);
+                    eventListener.onComment(CommentType.HIT);
                     receiveHit(action, target);
                     caster.setStance(FighterStance.NEUTRAL);
                 } else {
                     caster.setStance(FighterStance.NEUTRAL);
                     target.setStance(FighterStance.NEUTRAL);
-                    //eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " but missed", 1000);
-                    //eventListener.onComment(CommentType.BLOCKED);
+                    eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " but missed", 1000);
+                    eventListener.onComment(CommentType.BLOCKED);
                 }
             }
             case DEFENSE -> {
                 caster.setStance(FighterStance.BLOCKING);
-                //eventListener.onPrintWithDelay(caster.getName() + " used " + action.getName(), 1000);
+                eventListener.onPrintWithDelay(caster.getName() + " used " + action.getName(), 1000);
             }
         }
         return action.getType();
     }
-    public static boolean receiveHit(Action action, Fighter target){
+    public boolean receiveHit(Action action, Fighter target){
         if(target.getLastAction().getType().equals(ActionType.DEFENSE)){
-            //eventListener.onText(target.getName() + " blocks the attack!");
+            eventListener.onText(target.getName() + " blocks the attack!");
             return false;
         } else {
-            //eventListener.onText(target.getName() + " was hit by " + action.getName());
+            eventListener.onText(target.getName() + " was hit by " + action.getName());
             target.setFatigue(target.getFatigue() + action.getBaseFadigueConsumption() / 2);
             FadigueCalculator.applyFadiguePenalties(target);
             return true;
@@ -224,7 +235,16 @@ class ActionResolver{
     }
 
 
-    public static void apllyFatigueConsumption(Fighter caster, Action action, boolean hit){
+    public void apllyFatigueConsumption(Fighter caster, Action action, boolean hit){
         caster.setFatigue(caster.getFatigue() + FadigueCalculator.calculateFadigueConsumption(action, hit));
+    }
+
+
+    public ActionResolver(FightEventListener eventListener) {
+        this.setEventListener(eventListener);
+    }
+
+    public void setEventListener(FightEventListener eventListener) {
+        this.eventListener = eventListener;
     }
 }

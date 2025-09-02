@@ -4,8 +4,11 @@ import UCC.core.model.Action;
 import UCC.core.model.Fighter;
 import UCC.core.model.PhysicalAttributes;
 import UCC.gameplay.flow.Fight;
+import UCC.ui.ConsoleFightListener;
+import UCC.ui.FightEventListener;
 
 public class Main {
+    private static FightEventListener eventListener = new ConsoleFightListener();
     public static void main(String[] args) {
         PhysicalAttributes pA[] = new PhysicalAttributes[2];
         pA[0] = new PhysicalAttributes(1.75, 68.9, 60, 60, 70, 1,100, 0.1, 0.5, 75, 65, 68);
@@ -26,32 +29,12 @@ public class Main {
         l[1].addAction(block);
 
 
-        Fight UEC01 = new Fight(l[0],l[1]);
+        Fight UEC01 = new Fight(l[0],l[1], eventListener);
 
         UEC01.scheduleFight();
         UEC01.startSimulation();
         System.out.println("\n");
         System.out.println("\n");
-        //l[0].status();
-        //l[1].status();
 
-
-
-
-        /*l[0].performAction(l[0].getActions().get(0), l[1]);
-        l[1].performAction(l[1].getActions().get(0), l[0]);
-        System.out.println("\n" + l[0].getName() + " fadigue current fadigue: " + l[0].getFadigue());
-        System.out.println(l[1].getName() + " fadigue current fadigue: " + l[1].getFadigue());
-
-        l[0].performAction(l[0].getActions().get(1), l[0]);
-        l[1].performAction(l[1].getActions().get(0), l[0]);
-
-        System.out.println("\n" + l[0].getName() + " fadigue current fadigue: " + l[0].getFadigue());
-        System.out.println(l[1].getName() + " fadigue current fadigue: " + l[1].getFadigue());
-
-        l[0].performAction(l[0].getActions().get(0), l[1]);
-        l[1].performAction(l[1].getActions().get(1), l[1]);
-
-        */
     }
 }

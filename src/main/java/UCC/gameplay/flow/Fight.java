@@ -71,12 +71,12 @@ public class Fight {
         eventListener.onText("Max fadigue " + fighter.getMaxFatigue());
     }
 
-    public Fight(Fighter challenging, Fighter challenged) {
+    public Fight(Fighter challenging, Fighter challenged, FightEventListener eventListener) {
         this.setChallenging(challenging);
         this.setChallenged(challenged);
-        this.setEngine(new CombatEngine(challenging, challenged));
-        this.setEventListener(new ConsoleFightListener());
+        this.setEventListener(eventListener);
         this.setCombatResult(new CombatResult());
+        this.setEngine(new CombatEngine(challenging, challenged, eventListener));
     }
 
     public Fighter getChallenged() {
