@@ -23,10 +23,14 @@ public class Main {
 
         Action punch = new Action("Punch", 3, 70, ActionType.STRIKE);
         Action block = new Action("Block", 1, 100, ActionType.DEFENSE);
+        Action counter = new Action("Counter", 1, 100, ActionType.COUNTER);
+
         l[0].addAction(punch);
-        l[1].addAction(punch);
         l[0].addAction(block);
+        l[0].addAction(counter);
+        l[1].addAction(punch);
         l[1].addAction(block);
+        l[1].addAction(counter);
 
 
         Fight UEC01 = new Fight(l[0],l[1], eventListener);
