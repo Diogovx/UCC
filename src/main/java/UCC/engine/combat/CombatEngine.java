@@ -35,12 +35,12 @@ public class CombatEngine {
         Fighter[] fighters = determineInitialOrder();
 
         while (situation == null){
-            for(int i = 0; i < 2; i++){
-                eventListener.onNewRound(round);
-                runRound(fighters[0], fighters[1], round);
-                situation = checkVictoryConditions(round, maxRounds);
-                fighters = alternateTurn(fighters);
-            }
+
+            eventListener.onNewRound(round);
+            runRound(fighters[0], fighters[1], round);
+            situation = checkVictoryConditions(round, maxRounds);
+            fighters = alternateTurn(fighters);
+
             round++;
         }
 
@@ -140,10 +140,6 @@ public class CombatEngine {
         this.log = log;
     }
 
-    public FightEventListener getEventListener() {
-        return eventListener;
-    }
-
     public void setEventListener(FightEventListener eventListener) {
         this.eventListener = eventListener;
     }
@@ -175,21 +171,81 @@ public class CombatEngine {
 
 class ActionResolver{
     private FightEventListener eventListener;
+    private Random randomFactor = new Random();
 
-    public CombatLog performAction(Fighter caster, Fighter target, int round) {
-        Random randomFactor = new Random();
-        Action action = caster.getActions().get(randomFactor.nextInt(caster.getActions().size()));
-        boolean hit = checkAccuracy(action);
-        hitExecution(action, caster, target, hit);
-        apllyFatigueConsumption(caster, action, hit);
-        caster.setLastAction(action);
-        FadigueCalculator.applyFadiguePenalties(caster);
-
-        return new CombatLog(caster, target, round, action, hit);
+    public Action rollAction(Fighter attacker){
+        Action action;
+        do{
+            action = attacker.getActions().get(randomFactor.nextInt(attacker.getActions().size()));
+        } while (action.getType() == ActionType.COUNTER);
+        return action;
     }
 
+    public CombatLog performAction(Fighter attacker, Fighter target, int round) {
+        Action action = rollAction(attacker);
+
+        boolean hit = checkAccuracy(action);
+
+        resolveHit(action, attacker, target, hit);
+
+        resolveReaction(attacker, target, hit);
+
+        apllyFatigueConsumption(attacker, action, hit);
+
+        attacker.setLastAction(action);
+
+        FadigueCalculator.applyFadiguePenalties(attacker);
+
+        return new CombatLog(attacker, target, round, action, hit);
+    }
+
+    public void resolveHit(Action action, Fighter attacker , Fighter target, boolean hit){
+        if(action.getType() == ActionType.DEFENSE){
+            attacker.setStance(FighterStance.BLOCKING);
+            eventListener.onPrintWithDelay(attacker.getName() + " used " + action.getName(), 1000);
+            return;
+        }
+
+
+        if(action.getType() == ActionType.STRIKE){
+            attacker.setStance(FighterStance.HITTING);
+            if (hit && target.getStance() != FighterStance.BLOCKING) {
+                eventListener.onPrintWithDelay(attacker.getName() + " performed " + action.getName() + " and hit", 1000);
+                eventListener.onComment(CommentType.HIT);
+                receiveHit(action, target);
+            }
+            else{
+                eventListener.onPrintWithDelay(attacker.getName() + " performed " + action.getName() + " but missed", 1000);
+                eventListener.onComment(CommentType.BLOCKED);
+            }
+        } else if (action.getType() == ActionType.COUNTER) {
+            eventListener.onPrintWithDelay(target.getName() + " counter the attack", 1000);
+            eventListener.onComment(CommentType.SURPRISE);
+            receiveHit(action, target);
+        }
+    }
+
+    public void resolveReaction(Fighter attacker , Fighter target, boolean hit){
+        if((hit) || (hit && target.getStance() == FighterStance.BLOCKING)){
+            return;
+        }
+        if(!willCounter(target)){
+            return;
+        }
+
+        target.setStance(FighterStance.CONTERATTACKING);
+
+        target.getActions().stream()
+                .filter(a -> a.getType() == ActionType.COUNTER)
+                .findFirst()
+                .ifPresent(counter -> {
+                    resolveHit(counter, attacker , target, true);
+                });
+        target.setStance(FighterStance.NEUTRAL);
+    }
+
+
     public boolean checkAccuracy(Action action){
-        Random randomFactor = new Random();
         int randomNumber = randomFactor.nextInt(100);
         if(randomNumber <= action.getBaseAccuracy()){
             return true;
@@ -198,31 +254,9 @@ class ActionResolver{
         }
     }
 
-    public ActionType hitExecution(Action action, Fighter caster, Fighter target, boolean hit){
-        switch (action.getType()) {
-            case STRIKE, GRAPPLE, COUNTER -> {
-                caster.setStance(FighterStance.HITTING);
-                if (hit && target.getStance() != FighterStance.BLOCKING) {
-                    eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " and hit", 1000);
-                    eventListener.onComment(CommentType.HIT);
-                    receiveHit(action, target);
-                    caster.setStance(FighterStance.NEUTRAL);
-                } else {
-                    caster.setStance(FighterStance.NEUTRAL);
-                    target.setStance(FighterStance.NEUTRAL);
-                    eventListener.onPrintWithDelay(caster.getName() + " performed " + action.getName() + " but missed", 1000);
-                    eventListener.onComment(CommentType.BLOCKED);
-                }
-            }
-            case DEFENSE -> {
-                caster.setStance(FighterStance.BLOCKING);
-                eventListener.onPrintWithDelay(caster.getName() + " used " + action.getName(), 1000);
-            }
-        }
-        return action.getType();
-    }
+
     public boolean receiveHit(Action action, Fighter target){
-        if(target.getLastAction().getType().equals(ActionType.DEFENSE)){
+        if(target.getLastAction().getType().equals(ActionType.DEFENSE) && target.getStance() != FighterStance.CONTERATTACKING){
             eventListener.onText(target.getName() + " blocks the attack!");
             return false;
         } else {
@@ -232,6 +266,15 @@ class ActionResolver{
             return true;
         }
 
+    }
+
+    public boolean willCounter(Fighter target){
+        int randomNumber = randomFactor.nextInt(100);
+        if(randomNumber >= 90){
+            return true;
+        } else{
+            return false;
+        }
     }
 
 
